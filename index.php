@@ -2,9 +2,15 @@
 
 $ch = curl_init();
 
+$headers = [
+    "Authorization: Client-ID GKjyF4RHv8V3zEyr4lZyNQ0PsLN3jgyzMBvNLqtIzRw"
+];
+
 curl_setopt_array($ch, [
-    CURLOPT_URL => "https://api.rawg.io/api/games?key=e4572f2dd14c4e218a32cef96255d08f",
-    CURLOPT_RETURNTRANSFER => true
+    CURLOPT_URL => "https://api.unsplash.com/photos",
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_HTTPHEADER => $headers
+
 ]);
 
 $response = curl_exec($ch);
