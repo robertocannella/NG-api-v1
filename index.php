@@ -12,6 +12,10 @@ curl_setopt_array($ch, [
 
 $response = curl_exec($ch);
 
+$status_code = curl_getinfo($ch,CURLINFO_RESPONSE_CODE); // Integer Status code
+
 curl_close($ch);
 
-var_dump($response);
+echo $status_code . "\n";
+
+echo $response . "\n";
