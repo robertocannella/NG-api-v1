@@ -1,7 +1,17 @@
 <?php
 
-$response = file_get_contents("https://randomuser.me/api");
-$data = json_decode($response,true);
+$ch = curl_init();
 
-echo $data['results'][0]['name']['first'] . "\n";
+//curl_setopt($ch,CURLOPT_URL,"https://randomuser.me/api");
+//curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
+curl_setopt_array($ch, [
+    CURLOPT_URL => "https://randomuser.me/api",
+    CURLOPT_RETURNTRANSFER => true
+]);
+
+$response = curl_exec($ch);
+
+curl_close($ch);
+
+var_dump($response);
