@@ -2,11 +2,8 @@
 
 $ch = curl_init();
 
-//curl_setopt($ch,CURLOPT_URL,"https://randomuser.me/api");
-//curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
 curl_setopt_array($ch, [
-    CURLOPT_URL => "https://randomuser.me/api",
+    CURLOPT_URL => "https://api.rawg.io/api/games?key=e4572f2dd14c4e218a32cef96255d08f",
     CURLOPT_RETURNTRANSFER => true
 ]);
 
