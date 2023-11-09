@@ -1,29 +1,22 @@
 <?php
 
-use GuzzleHttp\Exception\GuzzleException;
+$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // Exclude any parameters
 
-require __DIR__ . "/vendor/autoload.php";
+$parts = explode('/',$path);
 
-$client = new GuzzleHttp\Client;
+$resource = $parts[1];
 
-try {
-   $response =  $client->request("GET", "https://api.github.com/user/repos",[
-        "headers" => [
-            "Authorization: Bearer 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",
-            "User-Agent: RobertoCannella",
-        ],
-       "debug" => true // dump all headers
-    ]);
+$id = $parts[2];
 
-} catch (GuzzleException $e) {
-    echo $e->getMessage();
+$method = $_SERVER['REQUEST_METHOD'];
+
+if ($resource != 'tasks'){
+    // header("{$_SERVER['SERVER_PROTOCOL']} 404 Not Found!");
+    http_response_code(404);
+    exit();
 }
-if (isset($response)) {
-    print_r($response->getHeaders());
-    print_r($response->getBody());
-} else {
-    echo "No response.\n";
-}
+echo $resource . $id . $method . "\n";
+
 
 
 
