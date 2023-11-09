@@ -1,6 +1,6 @@
 <?php
-//phpinfo();
-//exit();
+require dirname(__DIR__) . "/v1/vendor/autoload.php";
+
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // Exclude any parameters
 
 $parts = explode('/',$path);
@@ -19,7 +19,7 @@ if ($resource != 'tasks'){
 }
 
 
-require dirname(__DIR__) . "/v1/src/TaskController.php";
+
 
 
 $controller = new TaskController();
