@@ -2,7 +2,7 @@
 
 class TaskController {
 
-    public function processRequest(string $method, string $id = null): void{
+    public function processRequest(string $method, ?string $id): void{
 
         if ($id === null){ // no id, route for collections
 
@@ -12,6 +12,9 @@ class TaskController {
             }elseif ($method == "POST"){
 
                 echo "create";
+            } else {
+
+                $this->responseMethodNotAllowed("GET, POST");
             }
         } else { // id is present,
 
@@ -27,8 +30,13 @@ class TaskController {
                     echo "delete: " . $id;
                     break;
                 default:
-                    http_response_code(404);
+                    $this->responseMethodNotAllowed("GET, PATCH, DELETE");
             }
         }
+    }
+    private function responseMethodNotAllowed(string $allowed_methods):void{
+
+        http_response_code(405);
+        header("Allow: ". $allowed_methods);
     }
 }

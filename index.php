@@ -1,5 +1,10 @@
 <?php
+
+declare(strict_types=1);
+
 require dirname(__DIR__) . "/v1/vendor/autoload.php";
+
+set_exception_handler([ErrorHandler::class, 'handleException']);
 
 $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // Exclude any parameters
 
@@ -18,9 +23,7 @@ if ($resource != 'tasks'){
     exit();
 }
 
-
-
-
+header("Content-type: application/json; charset: UTF-8");
 
 $controller = new TaskController();
 
