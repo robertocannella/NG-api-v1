@@ -2,7 +2,7 @@
 
 class TaskController {
 
-    public function __construct(private TaskGateway $gateway)
+    public function __construct(private readonly TaskGateway $gateway)
     {
     }
 
@@ -54,6 +54,6 @@ class TaskController {
     private function respondNotFound(string $id):void{
 
         http_response_code(404);
-        echo json_encode(["message" => "Task with id: '{$id}' not found"]);
+        echo json_encode(["message" => "Task with id: '$id' not found"]);
     }
 }
