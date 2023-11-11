@@ -18,15 +18,23 @@ class TaskController {
                 echo "create";
             } else {
 
-                $this->responseMethodNotAllowed("GET, POST");
+                $this->respondMethodNotAllowed("GET, POST");
             }
         } else { // id is present,
 
+            $task = $this->gateway->get($id);
+
+            if ($task === false) {
+
+                $this->respondNotFound($id);
+                return;
+            }
             switch ($method) {
 
                 case "GET":
-                    echo "show: " . $id;
+                    echo json_encode($task);
                     break;
+
                 case "PATCH":
                     echo "update: " . $id;
                     break;
@@ -34,13 +42,18 @@ class TaskController {
                     echo "delete: " . $id;
                     break;
                 default:
-                    $this->responseMethodNotAllowed("GET, PATCH, DELETE");
+                    $this->respondMethodNotAllowed("GET, PATCH, DELETE");
             }
         }
     }
-    private function responseMethodNotAllowed(string $allowed_methods):void{
+    private function respondMethodNotAllowed(string $allowed_methods):void{
 
         http_response_code(405);
         header("Allow: ". $allowed_methods);
+    }
+    private function respondNotFound(string $id):void{
+
+        http_response_code(404);
+        echo json_encode(["message" => "Task with id: '{$id}' not found"]);
     }
 }
