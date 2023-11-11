@@ -30,8 +30,6 @@ header("Content-type: application/json; charset: UTF-8");
 
 $db = new Database($_ENV["DB_HOST"],$_ENV["DB_NAME"],$_ENV["DB_USER"],$_ENV["DB_PASS"]);
 
-$db->getConnection();
-
 $controller = new TaskController();
 
 $controller->processRequest($_SERVER['REQUEST_METHOD'], $id );
