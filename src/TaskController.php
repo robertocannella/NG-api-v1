@@ -50,7 +50,18 @@ class TaskController {
                     break;
 
                 case "PATCH":
-                    echo "update: " . $id;
+                    $data = (array) json_decode(file_get_contents("php://input"),true);
+
+                    $errors = $this->getValidationErrors($data,false);
+
+                    if (! empty($errors)){
+
+                        $this->respondUnprocessableEntity($errors);
+                        return;
+                    }
+                    $rows = $this->gateway->update($id, $data);
+
+                    echo json_encode(["message" => "Task updated", "rows" => $rows]);
                     break;
                 case "DELETE":
                     echo "delete: " . $id;
@@ -83,19 +94,20 @@ class TaskController {
         http_response_code(201);
         echo json_encode(["message" => "Task created. ID: $id"]);
     }
-    private function getValidationErrors(array $data): array
+    private function getValidationErrors(array $data, bool $is_new = true): array
     {
         $errors = [];
 
-        if (empty($data["name"])){
+        if ($is_new && empty($data["name"])){
 
             $errors[] = "name is required";
         }
-        if (! empty($data["priority"])){
+        if ( ! empty($data["priority"])) {
 
-            if (filter_var($data["priority"],FILTER_VALIDATE_INT) === false){
+            if (filter_var($data["priority"], FILTER_VALIDATE_INT) === false) {
 
                 $errors[] = "priority must be an integer";
+
             }
         }
 
