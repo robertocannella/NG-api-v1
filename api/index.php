@@ -14,11 +14,12 @@ $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); // Exclude any paramet
 
 $parts = explode('/',$path);
 
-$resource = $parts[1];
+$resource = $parts[2];
 
-$id = $parts[2] ?? null;
+$id = $parts[3] ?? null;
 
 $method = $_SERVER['REQUEST_METHOD'];
+
 
 if ($resource != 'tasks'){
 
