@@ -57,15 +57,17 @@ if ( ! password_verify($data["password"], $user["password_hash"]) ) {
 }
 
 // start building the payload for access_token
+// https://www.iana.org/assignments/jwt/jwt.xhtml for a list of valid claims
 $payload = [
-    "id" => $user["id"],
+    "sub" => $user["id"],
     "name" => $user["name"]
 ];
 
 // JSON Encode the payload:
 $payload_json = json_encode($payload);
 
-// encode the string to BASE 64
-$access_token = base64_encode($payload_json);
+// create JWT
+$codec = new JWTCodec( $_ENV["SECRET"]);
+$access_token = $codec->encode($payload);
 
 echo json_encode(["access_token" => $access_token]);

@@ -3,7 +3,9 @@
 class Auth {
 
     private int $user_id;
-    public function __construct(private readonly UserGateway $user_gateway)
+    public function __construct(
+        private readonly UserGateway $user_gateway,
+        private readonly JWTCodec $codec)
     {
     }
 
@@ -35,6 +37,10 @@ class Auth {
 
         return true;
     }
+
+    /**
+     * @throws Exception
+     */
     public function authenticateAccessToken() :bool
     {
         // TURN "HTTP_AUTHORIZATION" ON IN APACHE or .htaccess. Apache removes it before the header is passed into PHP.
@@ -49,26 +55,41 @@ class Auth {
             return false;
         }
 
-        $plain_text = base64_decode($matches[1], true);
+//        $plain_text = base64_decode($matches[1], true);
+//
+//        if ($plain_text === false) { // failed to base64 decode the string
+//
+//            http_response_code(400);
+//            echo json_encode(["message" => "invalid authorization header"]);
+//            return false;
+//
+//        }
+//
+//        $data = json_decode($plain_text, true);
+//
+//        if ($data === null) { // failed to JSON decode the string
+//
+//            http_response_code(400);
+//            echo json_encode(["message" => "invalid JSON"]);
+//            return false;
+//        }
+        try {
+            $data = $this->codec->decode($matches[1]);
 
-        if ($plain_text === false) { // failed to base64 decode the string
+        }catch (InvalidSignatureException){
 
-            http_response_code(400);
-            echo json_encode(["message" => "invalid authorization header"]);
+            http_response_code(401);
+            echo json_encode(["message"=>"invalid signature"]);
             return false;
 
-        }
-
-        $data = json_decode($plain_text, true);
-
-        if ($data === null) { // failed to JSON decode the string
+        } catch (Exception $e){
 
             http_response_code(400);
-            echo json_encode(["message" => "invalid JSON"]);
+            echo json_encode(["message"=>$e->getMessage()]);
             return false;
         }
 
-        $this->user_id = $data["id"];
+        $this->user_id = $data["sub"];
 
         return true;
 
