@@ -2,18 +2,20 @@
 
 class TaskController {
 
-    public function __construct(private readonly TaskGateway $gateway)
+    public function __construct(
+        private readonly TaskGateway $gateway,
+        private readonly int $user_id)
     {
     }
 
     public function processRequest(string $method, ?string $id): void
     {
 
-        if ($id === null){ // no id, route for collections
+        if ($id === null){ // no task id provide, query for entire task collections
 
             if ($method == "GET"){
 
-                echo json_encode($this->gateway->getAll());
+                echo json_encode($this->gateway->getAllByUserID($this->user_id));
             }elseif ($method == "POST"){
 
                 $data = (array) json_decode(file_get_contents("php://input"),true);
@@ -26,7 +28,7 @@ class TaskController {
                     return;
                 }
 
-                $id = $this->gateway->create($data);
+                $id = $this->gateway->createByUserId($this->user_id,$data);
 
                 $this->respondCreated($id);
 
@@ -36,7 +38,7 @@ class TaskController {
             }
         } else { // id is present,
 
-            $task = $this->gateway->get($id);
+            $task = $this->gateway->getByUserId($this->user_id, $id);
 
             if ($task === false) {
 
@@ -59,13 +61,19 @@ class TaskController {
                         $this->respondUnprocessableEntity($errors);
                         return;
                     }
-                    $rows = $this->gateway->update($id, $data);
+                    $rows = $this->gateway->updateForUser($this->user_id, $id, $data);
 
                     echo json_encode(["message" => "Task updated", "rows" => $rows]);
                     break;
                 case "DELETE":
 
-                    $rows = $this->gateway->delete($id);
+                    $rows = $this->gateway->deleteByUserId($this->user_id ,$id);
+
+                    if ( $rows === 0 ){
+                        http_response_code(500);
+                        echo json_encode(["message" => "Task NOT deleted.", "rows" => $rows]);
+                        exit();
+                    }
 
                     echo json_encode(["message" => "Task deleted", "rows" => $rows]);
                     break;
@@ -74,6 +82,7 @@ class TaskController {
             }
         }
     }
+
     private function respondUnprocessableEntity(array $errors):void
     {
         http_response_code(422);
