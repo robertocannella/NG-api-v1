@@ -27,7 +27,11 @@ $user_gateway = new UserGateway($db);
 
 $auth = new Auth($user_gateway);
 
-if ( ! $auth->authenticateAPIKey() ) {
+//if ( ! $auth->authenticateAPIKey() ) {
+//   exit;
+//}
+
+if ( ! $auth->authenticateAccessToken() ) {
     exit;
 }
 

@@ -35,6 +35,44 @@ class Auth {
 
         return true;
     }
+    public function authenticateAccessToken() :bool
+    {
+        // TURN "HTTP_AUTHORIZATION" ON IN APACHE or .htaccess. Apache removes it before the header is passed into PHP.
+        //      an alternative is to use
+        //          $headers = apache_request_headers();
+        //          echo $headers["Authorization"];
+        if (! preg_match("/^Bearer\s+(.*)$/", $_SERVER["HTTP_AUTHORIZATION"], $matches  ))
+        {
+
+            http_response_code(400);
+            echo json_encode(["message" => "incomplete authorization header"]);
+            return false;
+        }
+
+        $plain_text = base64_decode($matches[1], true);
+
+        if ($plain_text === false) { // failed to base64 decode the string
+
+            http_response_code(400);
+            echo json_encode(["message" => "invalid authorization header"]);
+            return false;
+
+        }
+
+        $data = json_decode($plain_text, true);
+
+        if ($data === null) { // failed to JSON decode the string
+
+            http_response_code(400);
+            echo json_encode(["message" => "invalid JSON"]);
+            return false;
+        }
+
+        $this->user_id = $data["id"];
+
+        return true;
+
+    }
     public function getUserId():int
     {
         return $this->user_id;

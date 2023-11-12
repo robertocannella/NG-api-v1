@@ -3,3 +3,11 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-l
 RewriteRule ^.* index.php [L] # L flag: stop processing
+
+
+# Apache removes Authorization Header before PHP can read it.
+#   This line sets the HTTP_AUTHORIZATION environment variable based on the Authorization header in the HTTP request.
+#       It captures the Authorization header value (if present) and assigns it to the HTTP_AUTHORIZATION variable.
+#       This can be useful for handling authentication and authorization in your web application.
+
+SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1

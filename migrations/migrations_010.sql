@@ -1,7 +1,9 @@
 
 CREATE DATABASE api_db;
 
-GRANT ALL PRIVILEGES ON api_db.* TO 'ng_api_db_user'@'localhost';
+CREATE USER 'api_db_user'@'localhost' IDENTIFIED BY "password";
+
+GRANT ALL PRIVILEGES ON api_db.* TO 'api_db_user'@'localhost';
 
 CREATE TABLE task (
     id INT NOT NULL AUTO_INCREMENT,
