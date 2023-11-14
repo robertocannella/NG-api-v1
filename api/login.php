@@ -56,18 +56,14 @@ if ( ! password_verify($data["password"], $user["password_hash"]) ) {
     exit;
 }
 
-// start building the payload for access_token
-// https://www.iana.org/assignments/jwt/jwt.xhtml for a list of valid claims
-$payload = [
-    "sub" => $user["id"],
-    "name" => $user["name"]
-];
-
-// JSON Encode the payload:
-$payload_json = json_encode($payload);
-
 // create JWT
 $codec = new JWTCodec( $_ENV["SECRET"]);
-$access_token = $codec->encode($payload);
 
-echo json_encode(["access_token" => $access_token]);
+// start building the payload for access_token
+// https://www.iana.org/assignments/jwt/jwt.xhtml for a list of valid claims
+
+require __DIR__ . "/token.php";
+
+$refresh_token_gateway = new RefreshTokenGateway($database, $_ENV["SECRET"]);
+
+$refresh_token_gateway->create($refresh_token, $refresh_token_expiry);
