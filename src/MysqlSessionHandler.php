@@ -13,7 +13,7 @@ class MysqlSessionHandler implements \SessionHandlerInterface
     protected string $col_sid = 'sid';
     protected string $col_expiry = 'expiry';
     protected string $col_data = 'data';
-    protected array $unlockStatement = [];
+    protected array $unlockStatements = [];
     protected bool $collectGarbage = false;
 
 
@@ -29,11 +29,29 @@ class MysqlSessionHandler implements \SessionHandlerInterface
     }
 
     /**
+     * Close the session and writes the session data to the database
      * @inheritDoc
      */
     public function close(): bool
     {
-        // TODO: Implement close() method.
+        if ($this->db->inTransaction()){
+            $this->db->commit();
+
+        }elseif ($this->unlockStatements){
+            while ($unlockStmt = array_shift($this->unlockStatements)){
+                $unlockStmt->execute();
+            }
+        }
+
+        if ($this->collectGarbage){
+            $sql = "DELETE FROM $this->table_sess WHERE $this->col_expiry < :time";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindValue(':time', time(), \PDO::PARAM_INT);
+            $stmt->execute();
+            $this->collectGarbage = false;
+        }
+        return true;
     }
 
     /**
@@ -49,7 +67,8 @@ class MysqlSessionHandler implements \SessionHandlerInterface
      */
     public function gc(int $max_lifetime): int|false
     {
-        // TODO: Implement gc() method.
+        $this->collectGarbage = true;
+        return true;
     }
 
     /**
