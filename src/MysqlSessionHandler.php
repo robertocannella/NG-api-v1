@@ -43,8 +43,9 @@ class MysqlSessionHandler implements \SessionHandlerInterface
             }
         }
 
+        $sql = "DELETE FROM $this->table_sess WHERE $this->col_expiry < :time";
+
         if ($this->collectGarbage){
-            $sql = "DELETE FROM $this->table_sess WHERE $this->col_expiry < :time";
 
             $stmt = $this->db->prepare($sql);
             $stmt->bindValue(':time', time(), \PDO::PARAM_INT);
@@ -59,7 +60,20 @@ class MysqlSessionHandler implements \SessionHandlerInterface
      */
     public function destroy(string $id): bool
     {
-        // TODO: Implement destroy() method.
+       $sql = "DELETE FROM $this->table_sess WHERE $this->col_data = :sid";
+       try
+       {
+           $stmt = $this->db->prepare($sql);
+           $stmt->bindParam(':sid',$id,\PDO::PARAM_INT);
+           $stmt->execute();
+       } catch (\PDOException $e)
+       {
+           if ($this->db->inTransaction()){
+               $this->db->rollBack();
+           }
+           throw $e;
+       }
+       return true;
     }
 
     /**
@@ -92,25 +106,28 @@ class MysqlSessionHandler implements \SessionHandlerInterface
 
     public function read(string $id): string|false
     {
+        $sql = "SELECT $this->col_expiry, $this->col_data
+                   FROM $this->table_sess
+                   WHERE $this->col_sid = :sid";
+
         try
         {
             if ($this->useTransactions){
                 $this->db->exec('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 $this->db->beginTransaction();
             } else {
-                $this->unlockStatement[] = $this->getLock($id);
-             }
-            $sql = "SELECT $this->col_expiry, $this->col_data
-                   FROM $this->table_sess
-                   WHERE $this->col_sid = :sid";
+                $this->unlockStatements[] = $this->getLock($id);
+            }
 
             if ($this->useTransactions){
                 $sql .= ' FOR UPDATE';
             }
+
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':sid', $id,\PDO::PARAM_INT);
             $stmt->execute();
             $results = $stmt->fetch(\PDO::FETCH_ASSOC);
+
             if ($results){
                 if ($results[$this->col_expiry] < time()){
 
@@ -139,15 +156,16 @@ class MysqlSessionHandler implements \SessionHandlerInterface
      * @inheritDoc
      */
     public function write(string $id, string $data): bool
+
     {
-        try {
-            $sql = "INSERT INTO $this->table_sess (
+        $sql = "INSERT INTO $this->table_sess (
                     $this->col_sid, $this->col_expiry, $this->col_data)
                     VALUES (:sid, :expriry, :data)
                     ON DUPLICATE KEY UPDATE
                     $this->col_expiry = :expriy,
                     $this->col_data = :data";
 
+        try {
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':expiry', $this->expiry, \PDO::PARAM_INT);
             $stmt->bindParam(':data', $data, \PDO::PARAM_STR);
