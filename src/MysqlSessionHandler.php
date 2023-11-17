@@ -1,6 +1,6 @@
 <?php
 
-namespace Cannella;
+namespace Cannella\Sessions;
 
 use PDOException;
 use PDOStatement;
@@ -73,7 +73,8 @@ class MysqlSessionHandler implements \SessionHandlerInterface
 
     public function read(string $id): string|false
     {
-        try {
+        try
+        {
             if ($this->useTransactions){
                 $this->db->exec('SET TRANSACTION ISOLATION LEVEL READ COMMITTED');
                 $this->db->beginTransaction();
@@ -99,12 +100,14 @@ class MysqlSessionHandler implements \SessionHandlerInterface
                 return $results[$this->col_data];
             }
             // if session has not been created, we reach this section
+            // and the session hasn't been registered in the database.
             if ($this->useTransactions){
                 $this->initializeRecord($stmt);
             }
-
             return '';
-        }catch (PDOException $e){
+        }
+        catch (PDOException $e)
+        {
             if ($this->db->inTransaction()){
                 $this->db->rollBack();
             }
@@ -118,7 +121,28 @@ class MysqlSessionHandler implements \SessionHandlerInterface
      */
     public function write(string $id, string $data): bool
     {
-        // TODO: Implement write() method.
+        try {
+            $sql = "INSERT INTO $this->table_sess (
+                    $this->col_sid, $this->col_expiry, $this->col_data)
+                    VALUES (:sid, :expriry, :data)
+                    ON DUPLICATE KEY UPDATE
+                    $this->col_expiry = :expriy,
+                    $this->col_data = :data";
+
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':expiry', $this->expiry, \PDO::PARAM_INT);
+            $stmt->bindParam(':data', $data, \PDO::PARAM_STR);
+            $stmt->bindParam(':sid', $id, \PDO::PARAM_INT);
+            $stmt->execute();
+
+            return true;
+
+        }catch (\PDOException $e){
+            if ($this->db->inTransaction()){
+                $this->db->rollBack();
+            }
+            throw $e;
+        }
     }
 
     /**
@@ -163,7 +187,9 @@ class MysqlSessionHandler implements \SessionHandlerInterface
             $insertStmt->bindValue(':data', '');
             $insertStmt->execute();
             return '';
-        } catch (PDOException $e){
+        }
+        catch (PDOException $e)
+        {
             if (str_starts_with($e->getCode(), '23')){
                 $selectStmt->execute();
                 $results = $selectStmt->fetch(\PDO::FETCH_ASSOC);
@@ -173,7 +199,8 @@ class MysqlSessionHandler implements \SessionHandlerInterface
                 return '';
             }
 
-            if ($this->db->inTransaction()){
+            if ($this->db->inTransaction())
+            {
                 $this->db->rollBack();
             }
             throw $e;
