@@ -15,6 +15,7 @@ class MysqlSessionHandler implements \SessionHandlerInterface
     protected string $col_data = 'data';
     protected array $unlockStatements = [];
     protected bool $collectGarbage = false;
+    private ?MysqlSessionHandler $sess = null;
 
 
     public function __construct(
@@ -60,7 +61,7 @@ class MysqlSessionHandler implements \SessionHandlerInterface
      */
     public function destroy(string $id): bool
     {
-       $sql = "DELETE FROM $this->table_sess WHERE $this->col_data = :sid";
+       $sql = "DELETE FROM $this->table_sess WHERE $this->col_sid = :sid";
        try
        {
            $stmt = $this->db->prepare($sql);
@@ -160,16 +161,18 @@ class MysqlSessionHandler implements \SessionHandlerInterface
     {
         $sql = "INSERT INTO $this->table_sess (
                     $this->col_sid, $this->col_expiry, $this->col_data)
-                    VALUES (:sid, :expriry, :data)
+                    VALUES (:sid, :expiry, :data)
                     ON DUPLICATE KEY UPDATE
-                    $this->col_expiry = :expriy,
-                    $this->col_data = :data";
+                    $this->col_expiry = :expiry_update,
+                    $this->col_data = :data_update";
 
         try {
             $stmt = $this->db->prepare($sql);
             $stmt->bindParam(':expiry', $this->expiry, \PDO::PARAM_INT);
             $stmt->bindParam(':data', $data, \PDO::PARAM_STR);
-            $stmt->bindParam(':sid', $id, \PDO::PARAM_INT);
+            $stmt->bindParam(':sid', $id);
+            $stmt->bindParam(':expiry_update', $this->expiry, \PDO::PARAM_INT);
+            $stmt->bindParam(':data_update', $data, \PDO::PARAM_STR);
             $stmt->execute();
 
             return true;
@@ -216,8 +219,9 @@ class MysqlSessionHandler implements \SessionHandlerInterface
     protected function initializeRecord(PDOStatement $selectStmt): string
     {
         try {
-            $sql = "INSERT INTO $this->table_sess ($this->col_sid, $this->expiry, $this->coldaata)
-                    VALUES (:sid, :expiry,:data)";
+            $sql = "INSERT INTO `$this->table_sess` (`$this->col_sid`, `$this->col_expiry`, `$this->col_data`)
+                    VALUES (:sid, :expiry, :data)";
+
             $insertStmt = $this->db->prepare($sql);
             $insertStmt->bindParam(':sid', $session_id);
             $insertStmt->bindParam(':expiry', $this->expiry, \PDO::PARAM_INT);
@@ -243,4 +247,5 @@ class MysqlSessionHandler implements \SessionHandlerInterface
             throw $e;
         }
     }
+
 }
