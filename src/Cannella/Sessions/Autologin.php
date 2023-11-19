@@ -1,10 +1,6 @@
 <?php
 namespace Cannella\Sessions;
 
-
-use http\Encoding\Stream\Inflate;
-use mysql_xdevapi\SqlStatementResult;
-
 class Autologin {
 
     use PersistentProperties;
@@ -58,8 +54,8 @@ class Autologin {
            $stmt->execute();
 
            $sess_key = $stmt->fetchColumn();
-           error_log($sess_key);
-           return $stmt->rowCount() > 0;
+           error_log("SESSION KEY: " . $sess_key);
+           return $sess_key !== false;
         }
         return false;
     }
@@ -80,7 +76,7 @@ class Autologin {
                 $newToken = $this->generateToken();
                 $this->storeToken($newToken);
                 $this->setCookie($newToken);
-                $_SESSION[$this->sess_auth] = true;
+
 
             } elseif ($this->checkCookieToken($storedToken, true)) {
                 $this->deleteAll();

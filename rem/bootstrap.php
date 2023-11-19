@@ -35,9 +35,10 @@ try {
     throw $e;
     exit();
 }
-$conn = $db->getConnection();
-$handler = new PersistentSessionHandler($conn);
-$autologin   = new Autologin($conn,'9','/rem');
+
+$conn        = $db->getConnection();
+$handler     = new PersistentSessionHandler($conn);
+$autologin   = new Autologin($conn,'9','/rem',$cooke = 'rem_auth');
 session_set_save_handler($handler);
 session_start();
 $_SESSION['active'] = time();

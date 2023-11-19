@@ -29,7 +29,7 @@ if (isset($_POST['login'])){
         session_regenerate_id(true); // Regenerate the session ID to prevent session fixation attacks
         $_SESSION['uname'] = $username;
         $_SESSION['authenticated'] = true;
-
+        $_SESSION['user_key'] = $userGateway->getUserId($username);
         // Autologin single use
         if (isset($_POST['remember'])){
             if (!empty($autologin)) {

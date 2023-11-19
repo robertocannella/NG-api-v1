@@ -10,11 +10,15 @@ class PersistentSessionHandler extends MysqlSessionHandler {
      */
     public function write(string $id, string $data): bool
     {
+
+        $user_key =  (isset($_SESSION['user_key'])) ? $_SESSION['user_key'] : null;
+
         $sql = "INSERT INTO $this->table_sess (
-                    $this->col_sid, $this->col_expiry, $this->col_data)
-                    VALUES (:sid, :expiry, :data)
+                    $this->col_sid, $this->col_expiry, $this->col_data, $this->col_ukey)
+                    VALUES (:sid, :expiry, :data, :ukey)
                     ON DUPLICATE KEY UPDATE
                     $this->col_expiry = :expiry_update,
+                    $this->col_ukey = :ukey_update,
                     $this->col_data = :data_update";
 
         try {
@@ -22,8 +26,10 @@ class PersistentSessionHandler extends MysqlSessionHandler {
             $stmt->bindParam(':expiry', $this->expiry, \PDO::PARAM_INT);
             $stmt->bindParam(':data', $data, \PDO::PARAM_STR);
             $stmt->bindParam(':sid', $id);
+            $stmt->bindParam(':ukey', $user_key);
             $stmt->bindParam(':expiry_update', $this->expiry, \PDO::PARAM_INT);
             $stmt->bindParam(':data_update', $data, \PDO::PARAM_STR);
+            $stmt->bindParam(':ukey_update', $user_key, \PDO::PARAM_STR);
             $stmt->execute();
 
 

@@ -1,7 +1,5 @@
 <?php
 
-use Cannella\Sessions\Autologin;
-
 require __DIR__ . '/../bootstrap.php';
 
 // create database object
@@ -13,19 +11,30 @@ $database = new Database(
 );
 
 $userGateway = new SessionUserGateway($database);
-$autologin   = new Autologin($database->getConnection(),'9','/rem');
 
-if (isset($_COOKIE['rc_auth'])){
+// Route the user based on Session/Cookie
+if (isset($_SESSION['authenticated']) || isset($_SESSION['rc_auth']))
+{
+    error_log("User has a valid session");
+    return;
+} elseif (isset($_COOKIE['rc_auth']))
+{
+    if (!empty($autologin)) {
+        error_log("User has a valid cookie");
 
-    $autologin->checkCredentials();
+        if (!$autologin->isStillValidAutologinSession()) {
+            header("Location: login.php");
+            exit;
+        }
 
-}
-else{
-    if (isset($_SESSION['authenticated']) || isset($_SESSION['rc_auth'])) {
-
-    } else {
         $autologin->checkCredentials();
-        header("Location: login.php");
     }
+}else {
+
+    if (!empty($autologin)) {
+        error_log("User has needs to authenticate");
+        $autologin->checkCredentials();
+    }
+    header("Location: login.php");
 }
 

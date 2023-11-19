@@ -13,6 +13,7 @@ class MysqlSessionHandler implements \SessionHandlerInterface
     private string $col_sid = 'sid';
     private string $col_expiry = 'expiry';
     private string $col_data = 'data';
+    private string $col_ukey = 'user_key';
     private array $unlockStatements = [];
     private bool $collectGarbage = false;
     private ?MysqlSessionHandler $sess = null;
@@ -159,11 +160,14 @@ class MysqlSessionHandler implements \SessionHandlerInterface
     public function write(string $id, string $data): bool
 
     {
+        $user_key =  (isset($_SESSION['user_key'])) ? $_SESSION['user_key'] : null;
+
         $sql = "INSERT INTO $this->table_sess (
-                    $this->col_sid, $this->col_expiry, $this->col_data)
-                    VALUES (:sid, :expiry, :data)
+                    $this->col_sid, $this->col_expiry, $this->col_data, $this->col_ukey)
+                    VALUES (:sid, :expiry, :data, :ukey)
                     ON DUPLICATE KEY UPDATE
                     $this->col_expiry = :expiry_update,
+                    $this->col_ukey = :ukey_update,
                     $this->col_data = :data_update";
 
         try {
@@ -171,8 +175,11 @@ class MysqlSessionHandler implements \SessionHandlerInterface
             $stmt->bindParam(':expiry', $this->expiry, \PDO::PARAM_INT);
             $stmt->bindParam(':data', $data, \PDO::PARAM_STR);
             $stmt->bindParam(':sid', $id);
+            $stmt->bindParam(':ukey', $user_key);
             $stmt->bindParam(':expiry_update', $this->expiry, \PDO::PARAM_INT);
             $stmt->bindParam(':data_update', $data, \PDO::PARAM_STR);
+            $stmt->bindParam(':ukey_update', $data, \PDO::PARAM_STR);
+
             $stmt->execute();
 
             return true;

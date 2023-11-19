@@ -46,6 +46,19 @@ class SessionUserGateway{
 
         return password_verify($provided, $stored);
     }
+    public function getUserId(string $username): ?string
+    {
+        $sql = "SELECT user_key FROM users WHERE username = :username";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':username', $username);
+        $stmt->execute();
+
+        $user_key = $stmt->fetchColumn();
+        return $user_key !== false ? $user_key : null;
+
+    }
+
     // API SCHEMA
     public function getByAPIKey(string $key): array |false
     {
