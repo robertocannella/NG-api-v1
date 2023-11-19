@@ -114,7 +114,7 @@ class Autologin {
 
         }else{
             $token = $this->parseCookie();
-            $sql = "UPDATE `$this->table_autologin` SET `$this->col_used = 1`
+            $sql = "UPDATE `$this->table_autologin` SET `$this->col_used` = 1
                     WHERE `$this->col_token` = :token";
 
             $stmt = $this->db->prepare($sql);
@@ -299,11 +299,16 @@ class Autologin {
 
     private function deleteAll(): void
     {
-        $sql = "DELETE FROM `$this->table_autologin` WHERE `$this->col_ukey` = :key";
 
-        $stmt = $this->db->prepare($sql);
+        $sql[] = "DELETE FROM `$this->table_autologin` WHERE `$this->col_ukey` = :key";
+        $sql[] = "DELETE FROM `$this->table_sess` WHERE `$this->col_ukey` = :key";
+
+        foreach ($sql as $query):
+        $stmt = $this->db->prepare($query);
         $stmt->bindParam(':key', $_SESSION[$this->sess_ukey]);
         $stmt->execute();
+        endforeach;
+
     }
 
 

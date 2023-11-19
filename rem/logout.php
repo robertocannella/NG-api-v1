@@ -15,9 +15,14 @@ $database = new Database(
 $userGateway = new SessionUserGateway($database);
 
 if(isset($_POST['logout'])){
-    if (!empty($autologin)) {
-        $autologin->logout();
-    }
+
+    if (!empty($autologin)):
+        if (isset($_POST['all']))
+            $autologin->logout($all = true); // end all Sessions
+        else
+            $autologin->logout($all = false); // end the current session only
+    endif;
+
     $_SESSION = [];
     $params = session_get_cookie_params();
     setcookie(session_name(), "", time() - 86400 /* 24hours */,
