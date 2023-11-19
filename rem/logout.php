@@ -17,10 +17,10 @@ $userGateway = new SessionUserGateway($database);
 if(isset($_POST['logout'])){
 
     if (!empty($autologin)):
-        if (isset($_POST['all']))
+        //if (isset($_POST['all']))
             $autologin->logout($all = true); // end all Sessions
-        else
-            $autologin->logout($all = false); // end the current session only
+       // else
+           // $autologin->logout($all = false); // end the current session only
     endif;
 
     $_SESSION = [];

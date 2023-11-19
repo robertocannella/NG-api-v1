@@ -23,8 +23,8 @@ if (isset($_SESSION['authenticated']) || isset($_SESSION['rc_auth']))
         error_log("User has a valid cookie");
 
         if (!$autologin->isStillValidAutologinSession()) {
-            header("Location: login.php");
-            exit;
+           header("Location: login.php");
+           exit;
         }
 
         $autologin->checkCredentials();
@@ -32,7 +32,7 @@ if (isset($_SESSION['authenticated']) || isset($_SESSION['rc_auth']))
 }else {
 
     if (!empty($autologin)) {
-        error_log("User has needs to authenticate");
+        error_log("User needs to authenticate");
         $autologin->checkCredentials();
     }
     header("Location: login.php");

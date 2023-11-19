@@ -43,19 +43,23 @@ class Autologin {
     }
     public function isStillValidAutologinSession(): bool
     {
-        $user_key = $this->getUserKey();
         if(isset($_COOKIE[$this->cookie])){  // If the cookie exists
 
-           $sql = "SELECT $this->sess_ukey FROM $this->table_autologin 
-                   WHERE $this->sess_ukey = :key";
+            $token = $this->parseCookie();
+            error_log("TOKEN: " .$token);
+            $sql = "SELECT $this->sess_ukey FROM $this->table_autologin
+                WHERE $this->col_token = :token";
 
-           $stmt = $this->db->prepare($sql);
-           $stmt->bindParam(':key', $user_key);
-           $stmt->execute();
+            $stmt = $this->db->prepare($sql);
 
-           $sess_key = $stmt->fetchColumn();
-           error_log("SESSION KEY: " . $sess_key);
-           return $sess_key !== false;
+            $stmt->bindParam(':token', $token);
+            $stmt->execute();
+
+            $user_key = $stmt->fetchColumn();
+
+            error_log("user_key: " . $user_key);
+
+            return $user_key !== false;
         }
         return false;
     }
@@ -194,6 +198,11 @@ class Autologin {
             throw $e;
         }
     }
+    /*
+  *
+  * Reads the token out of the stored single use Cookie
+  * TODO: NEEDS TO BE ENCRYPTED
+  */
     private function setCookie($token): void
     {
         $merged = str_split($token);
@@ -201,24 +210,18 @@ class Autologin {
         $merged = implode('', $merged);
 
         $token = $_SESSION[$this->sess_uname] . '|' . $merged;
-
-        setcookie($this->cookie, $token,
-            [
-                'expires' => $this->expiry,    // Expiry time
-                'path' => $this->cookiePath,   // Path where the cookie is available
-                'domain' => $this->domain,     // Domain of the cookie
-                'secure' => $this->secure,     // Whether the cookie should only be transmitted over a secure HTTPS connection
-                'httponly' => $this->httponly, // HttpOnly flag
-                'samesite' => $this->samesite  // SameSite attribute (can be 'None', 'Lax', or 'Strict')
-            ]
-        );
+        $args = [
+            'expires' => $this->expiry,    // Expiry time
+            'path' => $this->cookiePath,   // Path where the cookie is available
+            'domain' => $this->domain,     // Domain of the cookie
+            'secure' => $this->secure,     // Whether the cookie should only be transmitted over a secure HTTPS connection
+            'httponly' => $this->httponly, // HttpOnly flag
+            'samesite' => $this->samesite  // SameSite attribute (can be 'None', 'Lax', or 'Strict')
+        ];
+        setcookie($this->cookie, $token, $args);
 
     }
-    /*
-     *
-     * Reads the token out of the stored single use Cookie
-     * TODO: NEEDS TO BE ENCRYPTED
-     */
+
     private function parseCookie(): array|bool|string
     {
 
@@ -256,6 +259,7 @@ class Autologin {
         $sql = "SELECT COUNT(*) FROM `$this->table_autologin`
                 WHERE `$this->col_ukey` = :key AND `$this->col_token` = :token 
                 AND `$this->col_used` = :used";
+
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':key', $_SESSION[$this->sess_ukey]);
         $stmt->bindParam(':token', $storedToken);

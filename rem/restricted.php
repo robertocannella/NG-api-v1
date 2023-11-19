@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/includes/authenticate.php';
 
-$username = $_SESSION['uname'];
+
+$username =  $_SESSION['uname'] ?? null;
 
 ?>
 <!doctype html>

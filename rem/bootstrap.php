@@ -38,7 +38,7 @@ try {
 
 $conn        = $db->getConnection();
 $handler     = new PersistentSessionHandler($conn);
-$autologin   = new Autologin($conn,'9','/rem',$cooke = 'rem_auth');
+$autologin   = new Autologin($conn,'9','/rem', 'nuvolagraph.com');
 session_set_save_handler($handler);
 session_start();
 $_SESSION['active'] = time();
