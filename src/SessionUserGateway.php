@@ -58,6 +58,51 @@ class SessionUserGateway{
         return $user_key !== false ? $user_key : null;
 
     }
+    public function updateUserPassword($user_key, $password): ?bool
+    {
+        error_log("USER:KEY: " . $user_key);
+        error_log("PASSWORD: " . $password);
+        $sql = "UPDATE users SET pwd = :pwd WHERE user_key = :user_key;";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bindParam(':user_key', $user_key);
+        $stmt->bindValue(':pwd', password_hash($password, PASSWORD_DEFAULT));
+        $stmt->execute();
+
+
+        return $stmt->rowCount() > 0;
+    }
+    public  function isValidPassword($password) :bool
+    {
+        // Check length
+        if (strlen($password) < 8) {
+            return false;
+        }
+
+        // Regex patterns
+        $lowercase = '/[a-z]/';
+        $uppercase = '/[A-Z]/';
+        $number = '/[0-9]/';
+        $specialChar = '/[^a-zA-Z0-9]/'; // Assuming a special character is anything that's not a letter or number
+
+        // Check for character types
+        $hasLowercase = preg_match($lowercase, $password);
+        $hasUppercase = preg_match($uppercase, $password);
+        $hasNumber = preg_match($number, $password);
+        $hasSpecialChar = preg_match($specialChar, $password);
+
+        // Logic for "at least one of the following"
+        if ($hasLowercase + $hasUppercase + $hasNumber >= 1) {
+            return true;
+        }
+
+        // Logic for "any two of those with a special character"
+        if (($hasLowercase + $hasUppercase + $hasNumber >= 2) && $hasSpecialChar) {
+            return true;
+        }
+
+        return false;
+    }
 
     // API SCHEMA
     public function getByAPIKey(string $key): array |false
