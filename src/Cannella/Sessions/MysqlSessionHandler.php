@@ -9,12 +9,12 @@ class MysqlSessionHandler implements \SessionHandlerInterface
 {
 
     protected int $expiry;
-    protected string $table_sess = 'sessions';
-    protected string $col_sid = 'sid';
-    protected string $col_expiry = 'expiry';
-    protected string $col_data = 'data';
-    protected array $unlockStatements = [];
-    protected bool $collectGarbage = false;
+    private string $table_sess = 'sessions';
+    private string $col_sid = 'sid';
+    private string $col_expiry = 'expiry';
+    private string $col_data = 'data';
+    private array $unlockStatements = [];
+    private bool $collectGarbage = false;
     private ?MysqlSessionHandler $sess = null;
 
 

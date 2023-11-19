@@ -47,7 +47,7 @@ CREATE USER 'sess_admin'@'localhost' IDENTIFIED BY 'secret';
 GRANT SELECT, INSERT, UPDATE, DELETE ON persistent.* TO 'sess_admin'@'localhost';
 
 USE persistent;
-CrEATE TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS users (
     user_key CHAR(8) NOT NULL PRIMARY KEY,
     username CHAR(30) NOT NULL UNIQUE,
     pwd VARCHAR(255) NOT NULL
@@ -67,3 +67,6 @@ CREATE TABLE IF NOT EXISTS autologin (
     used TINYINT(1) NOT NULL DEFAULT 0,
     PRIMARY KEY (user_key, token)
 )ENGINE = InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE users MODIFY COLUMN user_key VARCHAR(12) NOT NULL;
+ALTER TABLE autologin MODIFY COLUMN user_key VARCHAR(12) NOT NULL;

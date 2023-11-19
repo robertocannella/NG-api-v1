@@ -1,9 +1,9 @@
 <?php
-use Cannella\Sessions;
+namespace Cannella\Sessions;
 
-class PersistentSessionHandler extends Sessions\MysqlSessionHandler {
+class PersistentSessionHandler extends MysqlSessionHandler {
 
-    use Sessions\PersistentProperities;
+    use PersistentProperties;
 
     /**
      * @inheritDoc
@@ -41,7 +41,7 @@ class PersistentSessionHandler extends Sessions\MysqlSessionHandler {
     }
     private function storeAutologinData($data){
 
-        // get the user key if it's not already strored as a session variable
+        // get the user key if it's not already stored as a session variable
         if (!isset($_SESSION[$this->sess_ukey])){
             $sql = "SELECT `$this->col_ukey` FROM `$this->table_users`
                     WHERE `$this->col_name` = :username";
@@ -54,7 +54,7 @@ class PersistentSessionHandler extends Sessions\MysqlSessionHandler {
         }
         // copy the session data to the autlogin table
         $sql = "UPDATE `$this->table_autologin` 
-                SET `$this->col_data = :data WHERE `$this->col_ukey = :key";
+                SET `$this->col_data` = :data WHERE `$this->col_ukey` = :key";
         $stmt = $this->db->prepare($sql);
         $stmt->bindParam(':data', $data);
         $stmt->bindParam(':key', $_SESSION[$this->sess_ukey]);

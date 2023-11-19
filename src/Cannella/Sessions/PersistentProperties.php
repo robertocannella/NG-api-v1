@@ -2,7 +2,7 @@
 
 namespace Cannella\Sessions;
 
-trait PersistentProperities
+trait PersistentProperties
 {
     private string $cookie = 'rc_auth';
     private string $table_sess = 'sessions';
