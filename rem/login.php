@@ -43,36 +43,59 @@ if (isset($_POST['login'])){
 }
 ?>
 
-<html>
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="css/styles.css" type="text/css">
-</head>
-
-<body>
-<h1>Persistent Login</h1>
+<?php include './includes/header.php'; ?>
 <?php
     if (isset($error)) {
         echo "<p>Error: " .  htmlspecialchars($error) . "</p>";
     };
 ?>
-<form action="<?= $_SERVER['PHP_SELF']?>" method="post"  >
-    <p>
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username">
-    </p>
-    <p>
-        <label for="pwd">Password</label>
-        <input type="password" name="pwd" id="pwd">
-    </p>
-    <p>
-        <input type="checkbox" name="remember" id="remember" value="remember">
-        <label for="remember">Remember me</label>
-    </p>
-    <p>
-        <input type="submit" name="login" value="Log In">
-    </p>
 
-</form>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 col-md-6 mx-auto">
+            <div class="p-4 shadow">
+            <h2 class="mt-4 mb-4">Login</h2>
+            <form action="<?= $_SERVER['PHP_SELF']?>" method="post">
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username:</label>
+                    <input type="text" class="form-control" name="username" id="username">
+                </div>
+                <div class="mb-3">
+                    <label for="pwd" class="form-label">Password:</label>
+                    <input type="password" class="form-control" name="pwd" id="pwd">
+                </div>
+                <div class="mb-3 form-check">
+                    <input type="checkbox" class="form-check-input" name="remember" id="remember" value="remember">
+                    <label class="form-check-label" for="remember">Remember me</label>
+                </div>
+                <div class="d-flex justify-content-between align-items-end">
+                    <button type="submit" class="btn btn-primary primary-button" name="login">Log In</button>
+                    <a href="register.php" name="register">Register</a>
+                </div>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-5">
+    <div class="row">
+        <h2>About Remember Me Sessions</h2>
+
+    </div>
+    <div class="row">
+        <p>
+            &nbsp;This site offers a robust template for managing user sessions through a database, ensuring seamless and secure user experiences.
+            Utilizing MySQL for persistent session storage, it reliably maintains user credentials across visits.
+            Explore the implementation on my <a href="https://github.com/robertocannella/NG-api-v1/tree/main/rem">GitHub</a> repository
+        </p>
+        <p>
+            &nbsp;This mini framework takes session management to the next level by extending PHP's native session handler interface,
+            providing a more flexible way to handle user sessions. It incorporates well-defined Gateways as control mechanisms to
+            interact seamlessly with the database, ensuring efficient and secure data handling. This approach not only enhances session
+            persistence but also optimizes the overall user experience by leveraging the power of PHP's backend capabilities.
+            Dive into the <a href="https://github.com/robertocannella/NG-api-v1/tree/main/rem">GitHub</a> repository to see how our framework can streamline your session management tasks
+        </p>
+    </div>
+</div>
 </body>
 </html>

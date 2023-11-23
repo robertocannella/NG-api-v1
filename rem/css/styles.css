@@ -1,12 +1,78 @@
 body {
-    background-color: #222222;
-    color: #f1f1f1;
+    font-family: "Lucida Grande" ,"Lucida Sans Unicode", "Verdana", Arial, Helvetica,sans-serif;
+    margin: 0;
+    background-color: #ffffff;
+    color: rgba(8, 8, 8, 0.62);
+}
+.form-control:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.25rem rgba(103, 58, 183, 0.25);
+    border-color: #673AB7;
+}
+.form-check-input:focus{
+    box-shadow: 0 0 0 0.25rem rgba(103, 58, 183, 0.25);
+    border-color: #673AB7;
+}
+.form-check-input:checked{
+    box-shadow: 0 0 0 0.25rem rgba(103, 58, 183, 0.25);
+    background-color: #673AB7FF;
+    border-color: #673AB7;
+}
+.form-check-input[type=checkbox]{
+    border-radius: unset;
+}
+input.form-control{
+    border-radius: 0;
 }
 
+
+/*!* It's a good practice to add a different focus style for accessibility *!*/
+/*input:focus {*/
+/*    border: 2px solid #673AB7; !* Example: changing the border color *!*/
+/*}*/
+/* It's a good practice to add a different focus style for accessibility */
+
+
 a, a:visited, a:active {
-    color: #f1f1f1;
+    color: rgba(8, 8, 8, 0.62);
     text-decoration: none;
 }
 a:hover {
-    color: #ffffff;
+    color: #2a2a2a;
+}
+
+.primary-button {
+    border-radius: 0;
+    background-color: #673AB7;
+    color: #FFFFFF;
+    font-size: large;
+    padding: 5px 10px;
+    border: 0;
+    cursor: pointer;
+}
+
+.secondary-button {
+    background-color: #4CAF50;
+    color: #FFFFFF;
+    font-size: large;
+    padding: 5px;
+    border: 0;
+    cursor: pointer;
+}
+
+.primary-button:hover {
+    background-color: #7E57C2; /* Slightly lighter purple */
+}
+
+.secondary-button:hover {
+    background-color: #66BB6A; /* Slightly lighter green */
+}
+
+/* For text and icons */
+.secondary-text {
+    color: #BDBDBD;
+}
+
+.icons, .borders {
+    color: #757575;
 }

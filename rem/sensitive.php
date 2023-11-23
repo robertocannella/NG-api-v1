@@ -6,13 +6,6 @@ if (isset($_POST)) {
     $currentPassword = $_POST['current'] ?? '';
     $newPassword = $_POST['new'] ?? '';
     $confirmPassword = $_POST['confirm'] ?? '';
-
-    // Validate input and check if current password is correct.
-    // Make sure new passwords match and follow your password policy (length, complexity, etc.)
-    // Update password in your database or authentication system.
-
-    // Provide feedback to the user.
-
     $expected = ['current', 'new', 'confirm'];
 
     foreach ($_POST as $key => $value) {
@@ -49,16 +42,9 @@ if (isset($_POST)) {
     }
 }
 ?>
-
-<!doctype html>
-<html>
-<head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="css/styles.css" type="text/css">
-</head>
-
-<body>
-<h1>Sensitive</h1>
+<?php include './includes/header.php'; ?>
+<div class="container">
+<h2>Sensitive</h2>
 
 <?php include_once 'includes/logout_button.php' ?>
 
@@ -108,7 +94,6 @@ if (isset($_POST)) {
     </div>
 </form>
 
-<p><a href="restricted.php">Go to page 1</a></p>
-<p><a href="restricted2.php">Go to page 2</a></p>
-</html>
+</div>
+<?php include './includes/footer.php'; ?>
 
