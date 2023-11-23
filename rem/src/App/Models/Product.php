@@ -1,8 +1,9 @@
 <?php
 
-namespace Framework\Models;
-use Database;
+namespace App\Models;
+use Utils\Database;
 use \PDO;
+
  class Product{
      private PDO $conn;
      public function __construct()
@@ -12,6 +13,7 @@ use \PDO;
              $_ENV["REM_DB_NAME"],
              $_ENV["REM_DB_USER"],
              $_ENV["REM_DB_PASS"]);
+
          $this->conn = $db->getConnection();
 
      }

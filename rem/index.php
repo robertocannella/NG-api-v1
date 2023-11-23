@@ -2,26 +2,43 @@
 
 declare(strict_types=1);
 
-require __DIR__ . '/bootstrap.php';
+require dirname(__DIR__) . "/rem/bootstrap.php";
 
-use Framework\Models\Product;
-use Framework\Controllers\Products;
-use Framework\Controllers\Home;
+use App\Models\Product;
+use App\Controllers\Products;
+use App\Controllers\Home;
+use Framework\Router;
+
+$home_dir = '/rem';
+$path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+$path = str_replace($home_dir,"", $path);
+
+
+$router = new Router();
+$router->add("/home/index", ["controller" => "home", "action" => "index"]);
+$router->add("/products", ["controller" => "products", "action" => "index"]);
+$router->add("/",["controller" => "home", "action" => "index"]);
+
+$params = $router->match($path);
+
+if ($params === false ){
+
+    exit("No route matched");
+}
+
+$segments = explode('/', $path);
 
 if (isset($db)) {
 
-
-    $action = ucwords($_GET["action"]);
-    $controller = ucwords($_GET["controller"]);
+    $controller = ucwords($params["controller"]);
+    $action = ucwords($params["action"]);
 
     // Dynamically create object
-    $controller_class = "Framework\\Controllers\\" . $controller;
+    $controller_class = "App\\Controllers\\" . $controller;
     $controller_object = new $controller_class();
 
     // Dynamically execute method
     $controller_object->$action();
-
-
 }
 
 

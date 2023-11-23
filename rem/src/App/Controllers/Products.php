@@ -1,8 +1,8 @@
 <?php
 
-namespace Framework\Controllers;
+namespace App\Controllers;
 
-use Framework\Models\Product;
+use App\Models\Product;
 
 
 class Products

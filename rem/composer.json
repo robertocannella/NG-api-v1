@@ -1,0 +1,15 @@
+{
+  "require": {
+    "guzzlehttp/guzzle": "^7.8",
+    "vlucas/phpdotenv": "^5.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "": "src/",
+      "App\\": "src/App",
+      "Framework\\": "src/Framework",
+      "Cannella\\Sessions\\": "../src/Cannella/Sessions",
+      "Utils\\": "../src"
+    }
+  }
+}

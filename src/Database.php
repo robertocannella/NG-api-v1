@@ -1,5 +1,9 @@
 <?php
 
+namespace Utils;
+
+use \PDO;
+
 class Database {
 
     private ?PDO $conn = null;

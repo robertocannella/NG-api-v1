@@ -1,9 +1,10 @@
 <?php
 
-require dirname(__DIR__) . "/vendor/autoload.php";
+require dirname(__DIR__) . "/rem/vendor/autoload.php";
 
 use Cannella\Sessions\Autologin;
 use Cannella\Sessions\PersistentSessionHandler;
+use Utils\Database;
 
 $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
 $dotenv->load();
