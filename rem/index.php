@@ -11,26 +11,15 @@ use Framework\Controllers\Home;
 if (isset($db)) {
 
 
-    $action = $_GET["action"];
-    $controller = $_GET["controller"];
+    $action = ucwords($_GET["action"]);
+    $controller = ucwords($_GET["controller"]);
 
+    // Dynamically create object
+    $controller_class = "Framework\\Controllers\\" . $controller;
+    $controller_object = new $controller_class();
 
-
-    if ($controller === "products"){
-        $model = new Product($db);
-        $controller_object = new Products($model);
-
-    }else{
-        $controller_object = new Home();
-
-    }
-
-
-    if ($action === "index"){
-        $controller_object->index();
-    }elseif($action === "show"){
-        $controller_object->show();
-    }
+    // Dynamically execute method
+    $controller_object->$action();
 
 
 }

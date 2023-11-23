@@ -4,17 +4,20 @@ namespace Framework\Controllers;
 
 use Framework\Models\Product;
 
+
 class Products
 
 {
-    public function __construct(private readonly Product $model)
+    private Product $product_model;
+    public function __construct()
     {
+        $this->product_model = new Product();
     }
 
     public function index(): void
     {
 
-        $products = $this->model->getData();
+        $products = $this->product_model->getData();
 
         require "views/product_index.php";
     }

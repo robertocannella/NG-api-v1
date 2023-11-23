@@ -2,17 +2,23 @@
 
 namespace Framework\Models;
 use Database;
-
 use \PDO;
-
  class Product{
-     public function __construct(private readonly Database $db)
+     private PDO $conn;
+     public function __construct()
      {
+         $db = new Database(
+             $_ENV["REM_DB_HOST"],
+             $_ENV["REM_DB_NAME"],
+             $_ENV["REM_DB_USER"],
+             $_ENV["REM_DB_PASS"]);
+         $this->conn = $db->getConnection();
+
      }
      public function getData():array
     {
-        $conn = $this->db->getConnection();
-        $stmt = $conn->query("SELECT * FROM product");
+
+        $stmt = $this->conn->query("SELECT * FROM product");
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
