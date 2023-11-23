@@ -2,12 +2,12 @@
 
 namespace Framework\Controllers;
 
-use Framework\Models\Model;
+use Framework\Models\Product;
 
-class Controller
+class Products
 
 {
-    public function __construct(private readonly Model $model)
+    public function __construct(private readonly Product $model)
     {
     }
 
@@ -17,5 +17,9 @@ class Controller
         $products = $this->model->getData();
 
         require "views/product_index.php";
+    }
+    public function show()
+    {
+        require "views/product_show.php";
     }
 }

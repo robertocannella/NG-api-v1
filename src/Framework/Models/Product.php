@@ -5,7 +5,7 @@ use Database;
 
 use \PDO;
 
- class Model{
+ class Product{
      public function __construct(private readonly Database $db)
      {
      }
