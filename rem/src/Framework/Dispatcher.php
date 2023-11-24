@@ -8,7 +8,7 @@ use ReflectionMethod;
  */
 class Dispatcher {
 
-    public function __construct(private readonly Router $router)
+    public function __construct(private readonly Router $router, private Viewer $viewer)
     {
 
     }
@@ -26,7 +26,7 @@ class Dispatcher {
         $action = $this->getActionName($params);
         $controller = $this->getControllerName($params);
 
-        $controller_object = new $controller();
+        $controller_object = new $controller($this->viewer);
 
         $args = $this->getActionArguments($controller,$action,$params);
 
@@ -36,19 +36,18 @@ class Dispatcher {
 
     private function getActionArguments(string $controller, string $action, array $params):array{
 
-        $namespace = "App\\Controllers\\";
-        $controllerClass = $namespace . $controller;
         $args = [];
 
         $method = new ReflectionMethod($controller, $action, );
 
-        foreach($method->getParameters() as $parameter){
+        foreach($method->getParameters() as $parameter) {
 
             $name = $parameter->getName();
-            $args[$name] = $params[$name];
+
+            $args[$name] = $params[$name] ;
+
         }
 
-        print_r($args);
         return $args;
     }
     private function getControllerName (array $params):string {
