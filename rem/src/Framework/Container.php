@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Framework;
 
 use Closure;
+use Exception;
+use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionNamedType;
 
 class Container{
@@ -17,6 +20,10 @@ class Container{
         $this->registery[$name] = $value;
     }
 
+    /**
+     * @throws ReflectionException
+     * @throws Exception
+     */
     public function get(string $class_name): object
     {
         if (array_key_exists($class_name, $this->registery)){
@@ -43,17 +50,17 @@ class Container{
 
             if ($type === null ){
 
-                exit("Constructor parameter '{$parameter->getName()}' in the $class_name class has no type declaration");
+                throw new InvalidArgumentException("Constructor parameter '{$parameter->getName()}' in the $class_name class has no type declaration");
             }
             if ( ! ($type instanceof ReflectionNamedType) ){
 
-                exit("Constructor parameter '{$parameter->getName()}' is the $class_name class is an invalid type: '$type' - only single named types supported.");
+                throw new InvalidArgumentException("Constructor parameter '{$parameter->getName()}' is the $class_name class is an invalid type: '$type' - only single named types supported.");
 
             }
 
             if ($type->isBuiltin()){ // (string) (int) etc...
 
-                exit ("Unable to resolve constructor parameter '{$parameter->getName()}' of type '$type' in the $class_name class. You may need an entry in the Service Container for '$class_name'.");
+                throw new InvalidArgumentException ("Unable to resolve constructor parameter '{$parameter->getName()}' of type '$type' in the $class_name class. You may need an entry in the Service Container for '$class_name'.");
 
             }
 

@@ -10,7 +10,7 @@ use Framework\Viewer;
 class Products
 
 {
-    public function __construct(private Viewer $viewer, private Product $product_model)
+    public function __construct(private readonly Viewer $viewer, private readonly Product $product_model)
     {
     }
 
@@ -31,7 +31,8 @@ class Products
         $this->viewer->render("Products/show.php", ["id" => $id]);
 
     }
-    public function showPage (string $title, string $id, string $page){
+    public function showPage (string $title, string $id, string $page): void
+    {
 
         echo $title . " " . $id . " " . $page;
     }
