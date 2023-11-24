@@ -1,20 +1,16 @@
 <?php
 
 namespace App\Models;
-use Utils\Database;
+use App\Database;
 use \PDO;
 
- class Product{
+class Product{
      private PDO $conn;
-     public function __construct()
+     public function __construct(private Database $database)
      {
-         $db = new Database(
-             $_ENV["REM_DB_HOST"],
-             $_ENV["REM_DB_NAME"],
-             $_ENV["REM_DB_USER"],
-             $_ENV["REM_DB_PASS"]);
+         $this->database = new Database();
 
-         $this->conn = $db->getConnection();
+         $this->conn = $this->database->getConnection();
 
      }
      public function getData():array

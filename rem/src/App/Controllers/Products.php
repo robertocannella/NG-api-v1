@@ -8,11 +8,8 @@ use Framework\Viewer;
 class Products
 
 {
-    private Product $product_model;
-    public function __construct(private Viewer $viewer)
+    public function __construct(private Viewer $viewer, private Product $product_model)
     {
-        $this->product_model = new Product();
-
     }
 
     public function index(): void

@@ -4,12 +4,8 @@ declare(strict_types=1);
 
 require dirname(__DIR__) . "/rem/bootstrap.php";
 
-use App\Models\Product;
-use App\Controllers\Products;
-use App\Controllers\Home;
 use Framework\Router;
 use Framework\Dispatcher;
-use Framework\Viewer;
 
 $home_dir = '/rem';
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
@@ -26,7 +22,7 @@ $router->add("/products", ["controller" => "products", "action" => "index"]);
 $router->add("/",["controller" => "home", "action" => "index"]);
 $router->add("/{controller}/{action}");
 
-$dispatch = new Dispatcher($router, new Viewer());
+$dispatch = new Dispatcher($router);
 
 $dispatch->handle($path);
 

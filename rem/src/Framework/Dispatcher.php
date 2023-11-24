@@ -1,14 +1,16 @@
 <?php
 
 namespace Framework;
+
 use ReflectionMethod;
+use ReflectionClass;
 
 /*
  * Processes requests
  */
 class Dispatcher {
 
-    public function __construct(private readonly Router $router, private Viewer $viewer)
+    public function __construct(private readonly Router $router)
     {
 
     }
@@ -26,7 +28,7 @@ class Dispatcher {
         $action = $this->getActionName($params);
         $controller = $this->getControllerName($params);
 
-        $controller_object = new $controller($this->viewer);
+        $controller_object = $this->getObject($controller);
 
         $args = $this->getActionArguments($controller,$action,$params);
 
@@ -58,6 +60,7 @@ class Dispatcher {
 
         $namespace =  (isset($params["namespace"])) ? "App\\Controllers\\{$params['namespace']}\\" :  "App\\Controllers\\";
 
+
         return  $namespace . $controller;
 
     }
@@ -66,6 +69,31 @@ class Dispatcher {
         $controller = $params["action"];
 
         return lcfirst(str_replace('-', "",ucwords(strtolower($controller), '-')));
+    }
 
+    private function getObject(string $class_name): object
+    {
+
+        $reflector = new ReflectionClass($class_name);
+
+        $constructor = $reflector->getConstructor();
+
+        $dependencies = [];
+
+        if ($constructor === null) {
+
+            return new $class_name;
+
+        }
+
+        foreach ($constructor->getParameters() as $parameter) {
+
+            $type = (string) $parameter->getType();
+
+            $dependencies[] = $this->getObject($type);
+
+        }
+
+        return new $class_name(...$dependencies);
     }
 }

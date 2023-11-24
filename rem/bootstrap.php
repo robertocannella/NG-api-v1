@@ -2,6 +2,7 @@
 
 require dirname(__DIR__) . "/rem/vendor/autoload.php";
 
+// Server level dependencies (for session management)
 use Cannella\Sessions\Autologin;
 use Cannella\Sessions\PersistentSessionHandler;
 use Utils\Database;
@@ -27,10 +28,10 @@ header("Content-Type: text/html; charset=UTF-8");
 
 try {
     $db = new Database(
-        $_ENV["REM_DB_HOST"],
-        $_ENV["REM_DB_NAME"],
-        $_ENV["REM_DB_USER"],
-        $_ENV["REM_DB_PASS"]);
+        $_ENV["SESSION_DB_HOST"],
+        $_ENV["SESSION_DB_NAME"],
+        $_ENV["SESSION_DB_USER"],
+        $_ENV["SESSION_DB_PASS"]);
 }catch (PDOException $e){
     $error = $e->getMessage();
     throw $e;
