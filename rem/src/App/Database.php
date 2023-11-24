@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 use PDO;
@@ -7,18 +9,13 @@ use PDO;
 class Database {
 
     private ?PDO $conn = null;
-    private readonly string $host;
-    private readonly string $name;
-    private readonly string $user;
-    private readonly string $pass;
 
-    public function __construct()
+    public function __construct(
+        private readonly string $host,
+        private readonly string $name,
+        private readonly string $user,
+        private readonly string $pass)
     {
-
-        $this->host = $_ENV["REM_DB_HOST"];
-        $this->name = $_ENV["REM_DB_NAME"];
-        $this->user = $_ENV["REM_DB_USER"];
-        $this->pass = $_ENV["REM_DB_PASS"];
     }
     public function getConnection () : PDO
     {
