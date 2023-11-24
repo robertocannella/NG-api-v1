@@ -6,9 +6,9 @@
   "autoload": {
     "psr-4": {
       "": "src/",
-      "App\\": "src/App",
-      "Framework\\": "src/Framework",
-      "Cannella\\Sessions\\": "../src/Cannella/Sessions",
+      "App\\": "src/App/",
+      "Framework\\": "src/Framework/",
+      "Cannella\\Sessions\\": "../src/Cannella/Sessions/",
       "Utils\\": "../src"
     }
   }
