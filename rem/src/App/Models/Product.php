@@ -12,7 +12,8 @@ class Product extends Model {
     protected function validate (array $data): void
     {
 
-
+        $segments = explode('/', $_SERVER["REQUEST_URI"]);
+        $action =   array_pop($segments);
 
         if (empty($data["product_id"])) {
 
@@ -24,14 +25,14 @@ class Product extends Model {
             $this->addError("name", "Name is required");
         }
 
-        if (isset($data["product_id"] )){
+        // Check for duplicate product_id on create
+        if ( $action === "create"){
             $exists = $this->existsProductId((int) $data["product_id"]);
 
             if ($exists){
 
                 $this->addError("duplicate", "A record with that product ID exists");
             }
-
         }
 
     }

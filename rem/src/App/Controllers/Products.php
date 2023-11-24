@@ -38,10 +38,27 @@ class Products
 
         }
 
-        $this->viewer->render('Shared/header.php', ["title" => "Products"]);
+        $this->viewer->render('Shared/header.php', ["title" => "Product Page"]);
 
         // pass data as an associative array
         $this->viewer->render("Products/show.php", ["id" => $id, "product" => $product]);
+
+    }
+    public function edit(string $id):void
+    {
+
+        $product = $this->product_model->find($id);
+
+        if (! $product ){
+
+            throw new PageNotFoundException();
+
+        }
+
+        $this->viewer->render('Shared/header.php', ["title" => "Edit Product"]);
+
+        // pass data as an associative array
+        $this->viewer->render("Products/edit.php", ["id" => $id, "product" => $product]);
 
     }
     public function new(): void
@@ -71,6 +88,38 @@ class Products
 
             $this->viewer->render("Products/new.php", ["errors" => $this->product_model->getErrors()]);
         }
+    }
+    public function update(string $id): void
+    {
+
+        $product = $this->product_model->find($id);
+
+        if (! $product ){
+
+            throw new PageNotFoundException();
+
+        }
+
+        $data = [
+            "product_id" => $product['product_id'], //prevent updating of product_id
+            "name" => (string) $_POST["name"],
+            "description" => $_POST["description"] ?? null
+        ];
+
+        if ($this->product_model->update($id, $data)) {
+            header("Location: /rem/products/{$id}/show");
+            exit;
+
+        } else {
+
+            $this->viewer->render('Shared/header.php', ["title" => "Edit Product"]);
+
+            $this->viewer->render("Products/edit.php", [
+                "errors" => $this->product_model->getErrors(),
+                "product" => $product
+            ]);
+        }
+
     }
     public function showPage (string $title, string $id, string $page): void
     {

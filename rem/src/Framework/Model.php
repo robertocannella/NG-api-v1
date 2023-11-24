@@ -110,7 +110,16 @@ abstract class Model{
                 throw $e;
             }
         }
-
-
     }
+    public function update(string $id, array $data):bool
+    {
+        $this->validate($data);
+
+        if (! empty($this->errors) ) {
+            return false;
+        }
+
+        return true;
+    }
+
  }
