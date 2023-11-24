@@ -21,8 +21,9 @@ class Products
 
         require "views/product_index.php";
     }
-    public function show()
+    public function show(string $id):void
     {
+        var_dump($id);
         require "views/product_show.php";
     }
 }

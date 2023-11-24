@@ -8,11 +8,11 @@ use App\Models\Product;
 use App\Controllers\Products;
 use App\Controllers\Home;
 use Framework\Router;
+use Framework\Dispatcher;
 
 $home_dir = '/rem';
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 $path = str_replace($home_dir,"", $path);
-
 
 $router = new Router();
 
@@ -23,27 +23,9 @@ $router->add("/products", ["controller" => "products", "action" => "index"]);
 $router->add("/",["controller" => "home", "action" => "index"]);
 $router->add("/{controller}/{action}");
 
-$params = $router->match($path);
+$dispatch = new Dispatcher($router);
 
-if ($params === false ){
-
-    exit("No route matched");
-}
-
-$segments = explode('/', $path);
-
-if (isset($db)) {
-
-    $controller = ucwords($params["controller"]);
-    $action = ucwords($params["action"]);
-
-    // Dynamically create object
-    $controller_class = "App\\Controllers\\" . $controller;
-    $controller_object = new $controller_class();
-
-    // Dynamically execute method
-    $controller_object->$action();
-}
+$dispatch->handle($path);
 
 
 
