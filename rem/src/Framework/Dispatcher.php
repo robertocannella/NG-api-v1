@@ -1,6 +1,7 @@
 <?php
 
 namespace Framework;
+use ReflectionMethod;
 
 /*
  * Processes requests
@@ -22,16 +23,50 @@ class Dispatcher {
             exit("No route matched");
         }
 
-        $segments = explode('/', $path);
+        $action = $this->getActionName($params);
+        $controller = $this->getControllerName($params);
 
-        $controller = ucwords($params["controller"]);
-        $action = ucwords($params["action"]);
+        $controller_object = new $controller();
 
-        // Dynamically create object
-        $controller_class = "App\\Controllers\\" . $controller;
-        $controller_object = new $controller_class();
+        $args = $this->getActionArguments($controller,$action,$params);
 
         // Dynamically execute method
-        $controller_object->$action();
+        $controller_object->$action(...$args);
+    }
+
+    private function getActionArguments(string $controller, string $action, array $params):array{
+
+        $namespace = "App\\Controllers\\";
+        $controllerClass = $namespace . $controller;
+        $args = [];
+
+        $method = new ReflectionMethod($controller, $action, );
+
+        foreach($method->getParameters() as $parameter){
+
+            $name = $parameter->getName();
+            $args[$name] = $params[$name];
+        }
+
+        print_r($args);
+        return $args;
+    }
+    private function getControllerName (array $params):string {
+
+        $controller = $params["controller"];
+
+        $controller =str_replace('-', "",ucwords(strtolower($controller), '-'));
+
+        $namespace =  (isset($params["namespace"])) ? "App\\Controllers\\{$params['namespace']}\\" :  "App\\Controllers\\";
+
+        return  $namespace . $controller;
+
+    }
+    private function getActionName (array $params):string {
+
+        $controller = $params["action"];
+
+        return lcfirst(str_replace('-', "",ucwords(strtolower($controller), '-')));
+
     }
 }

@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use App\Models\Product;
 
-
 class Products
 
 {
@@ -16,7 +15,6 @@ class Products
 
     public function index(): void
     {
-
         $products = $this->product_model->getData();
 
         require "views/product_index.php";
@@ -25,5 +23,9 @@ class Products
     {
         var_dump($id);
         require "views/product_show.php";
+    }
+    public function showPage (string $title, string $id, string $page){
+
+        echo $title . " " . $id . " " . $page;
     }
 }
