@@ -18,7 +18,9 @@ $router = require dirname(__DIR__) .  "/config/routes.php";
 
 $container = require dirname(__DIR__) . "/config/services.php";
 
-$dispatch = new Dispatcher($router, $container);
+$middlewares = require dirname(__DIR__) . "/config/middleware.php";
+
+$dispatch = new Dispatcher($router, $container, $middlewares);
 
 $request = Request::createFromGlobals();
 

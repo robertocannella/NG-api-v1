@@ -15,8 +15,10 @@ use UnexpectedValueException;
  */
 class Dispatcher {
 
-    public function __construct(private readonly Router $router,
-                                private Container $container)
+    public function __construct(
+        private readonly Router $router,
+        private Container $container,
+        private array $middleware_classes)
     {
 
     }
@@ -27,7 +29,7 @@ class Dispatcher {
 
         $params = $this->router->match($path, $request->method);
 
-        if ($params === false ){
+        if ($params === false) {
 
             throw new PageNotFoundException("No route matched for '$path' with method '{$request->method}' ");
         }
@@ -37,17 +39,20 @@ class Dispatcher {
 
         $controller_object = $this->container->get($controller);
 
-        $controller_object->setRequest($request);
-
         $controller_object->setViewer($this->container->get(TemplateViewerInterface::class));
 
         $controller_object->setResponse($this->container->get(Response::class));
 
-        $args = $this->getActionArguments($controller,$action,$params);
+        $args = $this->getActionArguments($controller, $action, $params);
 
-        // Dynamically execute method
-        return $controller_object->$action(...$args);
+        $controller_handler = new ControllerRequestHandler($controller_object, $action, $args);
 
+        $middleware = $this->getMiddleware($params);
+
+        $middleware_handler = new MiddlewareRequestHandler($middleware, $controller_handler);
+
+        return $middleware_handler->handle($request);
+        //return $controller_handler->handle($request);
 
     }
 
@@ -97,6 +102,26 @@ class Dispatcher {
         }
 
         return str_replace($home_dir,"", $path);
+    }
+    private function getMiddleware(array $params) : array
+    {
+        if ( ! array_key_exists( "middleware", $params) ){
+
+            return [];
+        }
+
+        $middleware = explode("|", $params["middleware"]);
+
+        array_walk($middleware,function (&$value){
+
+            if (! array_key_exists($value, $this->middleware_classes)){
+
+                throw new UnexpectedValueException("Middleware '$value' not found in config settings");
+            }
+            $value = $this->container->get($this->middleware_classes[$value]);
+
+        });
+        return $middleware;
     }
 
 

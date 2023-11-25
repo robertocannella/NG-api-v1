@@ -9,14 +9,13 @@ use Framework\Request;
 use Framework\RequestHandlerInterface;
 use Framework\Response;
 
-class ChangeResponseExample implements MiddlewareInterface
+class ChangeRequestExample implements MiddlewareInterface
 {
     public function process (Request $request, RequestHandlerInterface $next): Response
 
     {
+        $request->post = array_map("trim", $request->post);
         $response = $next->handle($request);
-
-        $response->setBody($response->getBody() . "Hello from Middleware");
 
         return $response;
     }
