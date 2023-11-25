@@ -28,7 +28,7 @@ class Container{
     {
         if (array_key_exists($class_name, $this->registery)){
 
-            return $this->registery[$class_name](); // need anonymous function to execute
+            return $this->registery[$class_name](); // need anonymous function to execute "()"
 
         }
 

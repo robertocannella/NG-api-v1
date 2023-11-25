@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use Framework\Viewer;
+use Framework\Controller;
 
-class Home {
+class Home extends Controller {
 
-    public function __construct(private Viewer $viewer)
+    public function __construct()
     {
     }
 

@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use App\Models\Product;
+use Framework\Controller;
 use Framework\Exceptions\PageNotFoundException;
 use Framework\Viewer;
 use JetBrains\PhpStorm\NoReturn;
 
 
-class Products
+class Products extends Controller
 
 {
-    public function __construct(private readonly Viewer $viewer, private readonly Product $product_model)
+
+    public function __construct(private readonly Product $product_model)
     {
     }
 
@@ -77,9 +79,9 @@ class Products
 
 
         $data = [
-            "product_id" => (int) $_POST["product_id"],
-            "name" => (string) $_POST["name"],
-            "description" => $_POST["description"] ?? null
+            "product_id" => (int) $this->request->post["product_id"],
+            "name" => (string) $this->request->post["name"],
+            "description" => $this->request->post["description"] ?? null
         ];
 
 
@@ -105,8 +107,8 @@ class Products
         $product = $this->getProductById($id);
 
         // $product['product_id'] = (int) $_POST["product_id"];; //prevent updating of product_id
-        $product["name"]  = (string) $_POST["name"];
-        $product["description"] = $_POST["description"] ?? null;
+        $product["name"]  = (string) $this->request->post["name"];
+        $product["description"] = $this->request->post["description"] ?? null;
 
 
         if ($this->product_model->update($id, $product)) {
