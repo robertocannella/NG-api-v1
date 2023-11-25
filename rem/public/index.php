@@ -22,7 +22,9 @@ $dispatch = new Dispatcher($router, $container);
 
 $request = Request::createFromGlobals();
 
-$dispatch->handle($request);
+$response = $dispatch->handle($request);
+
+$response->send();
 
 
 

@@ -38,7 +38,7 @@ class MVCTemplateViewer implements TemplateViewerInterface {
 
         eval("?>$code");
 
-        return ob_get_flush();
+        return ob_get_clean();
 
     }
     private  function replaceVariables(string $code ):string

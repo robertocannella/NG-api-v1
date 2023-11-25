@@ -21,7 +21,7 @@ class Dispatcher {
 
     }
 
-    public function handle (Request $request): void
+    public function handle (Request $request): Response
     {
         $path = $this->getPath($request->uri);
 
@@ -38,12 +38,17 @@ class Dispatcher {
         $controller_object = $this->container->get($controller);
 
         $controller_object->setRequest($request);
+
         $controller_object->setViewer($this->container->get(TemplateViewerInterface::class));
+
+        $controller_object->setResponse($this->container->get(Response::class));
 
         $args = $this->getActionArguments($controller,$action,$params);
 
         // Dynamically execute method
-        $controller_object->$action(...$args);
+        return $controller_object->$action(...$args);
+
+
     }
 
     private function getActionArguments(string $controller, string $action, array $params):array{

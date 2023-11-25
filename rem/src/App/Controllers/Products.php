@@ -7,6 +7,7 @@ namespace App\Controllers;
 use App\Models\Product;
 use Framework\Controller;
 use Framework\Exceptions\PageNotFoundException;
+use Framework\Response;
 use JetBrains\PhpStorm\NoReturn;
 
 
@@ -18,18 +19,17 @@ class Products extends Controller
     {
     }
 
-    public function index(): void
+    public function index(): Response
     {
         $products = $this->product_model->findAll();
 
-
         // pass data as an associative array
-        $this->viewer->render('Products/index.mvc.php', [
+        return $this->view('Products/index.mvc.php', [
             "products" => $products,
             "total" => $this->product_model->getTotalProducts()
         ]);
-
     }
+
     public function getProductById(string $id):array
     {
         $product = $this->product_model->find($id);
@@ -41,34 +41,35 @@ class Products extends Controller
         }
         return $product;
     }
-    public function show(string $id):void
+    public function show(string $id):Response
     {
-
         $product = $this->getProductById($id);
 
         // pass data as an associative array
-        $this->viewer->render("Products/show.mvc.php", [
-            "id" => $id, "product" => $product
+        return $this->view("Products/show.mvc.php", [
+            "id" => $id,
+            "product" => $product
         ]);
-
     }
-    public function edit(string $id):void
+    public function edit(string $id):Response
     {
 
         $product = $this->getProductById($id);
 
-
         // pass data as an associative array
-        $this->viewer->render("Products/edit.mvc.php",
-            ["id" => $id, "product" => $product, "action" => "edit"]);
+        return $this->view("Products/edit.mvc.php", [
+            "id" => $id,
+            "product" => $product,
+            "action" => "edit"
+            ]);
 
     }
-    public function new(): void
+    public function new(): Response
     {
 
-        $this->viewer->render("Products/new.mvc.php",["action" => "new"]);
+        return $this->view("Products/new.mvc.php",["action" => "new"]);
     }
-    public function create(): void
+    public function create(): Response
     {
 
         $data = [
@@ -77,22 +78,20 @@ class Products extends Controller
             "description" => $this->request->post["description"] ?? null
         ];
 
-
         if ($this->product_model->insert($data) > 0) {
 
-            header("Location: /rem/products/{$this->product_model->getInsertId()}/show");
-            exit;
+            return $this->redirect("/rem/products/{$this->product_model->getInsertId()}/show");
 
         } else {
 
-            $this->viewer->render("Products/new.mvc.php", [
+           return $this->view("Products/new.mvc.php", [
                 "errors" => $this->product_model->getErrors(),
                 "product" => $data,
                 "action" => "create"
             ]);
         }
     }
-    public function update(string $id): void
+    public function update(string $id): Response
     {
 
         $product = $this->getProductById($id);
@@ -103,12 +102,12 @@ class Products extends Controller
 
 
         if ($this->product_model->update($id, $product)) {
-            header("Location: /rem/products/{$id}/show");
-            exit;
+
+            return $this->redirect("/rem/products/{$id}/show");
 
         } else {
 
-            $this->viewer->render("Products/edit.mvc.php", [
+            return $this->view("Products/edit.mvc.php", [
                 "errors" => $this->product_model->getErrors(),
                 "product" => $product,
                 "action" => "update"
@@ -116,33 +115,35 @@ class Products extends Controller
         }
 
     }
-    public function delete (string $id):bool{
+    public function delete (string $id): Response
+    {
 
         $product = $this->getProductById($id);
 
-        $this->viewer->render('Shared/header.php', ["title" => "Delete Product"]);
-
-        $this->viewer->render("Products/delete.mvc.php", [
+        return $this->view("Products/delete.mvc.php", [
             "product" => $product,
             "action" => "delete"
         ]);
 
-        return false;
     }
-    #[NoReturn] public function destroy(string $id):void
+    public function destroy(string $id): Response
     {
 
         $this->product_model->delete($id);
 
-        header("Location: /rem/products/index");
-        exit;
+        return $this->redirect("/rem/products/index");
 
     }
     public function showPage (string $title, string $id, string $page): void
     {
-
         echo $title . " " . $id . " " . $page;
+    }
+    public function responseCodeExample(): Response
+    {
+        $this->response->setStatusCode(451);
 
+        $this->response->setBody("Unavailable for legal reasons");
 
+        return $this->response;
     }
 }
