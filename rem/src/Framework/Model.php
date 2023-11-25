@@ -119,7 +119,59 @@ abstract class Model{
             return false;
         }
 
-        return true;
+        $sql = "UPDATE {$this->getTable()}";
+
+            unset($data["id"]);
+
+            $assignments = array_keys($data);
+
+            array_walk($assignments,function (&$value){
+
+                $value = "$value = ? ";
+
+            });
+
+        $sql .= " SET " . implode(", ", $assignments);
+
+        $sql .= " WHERE id = ? ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        try {
+
+            $i = 1;
+            foreach ($data as $datum) {
+                $type = match (gettype($datum)) {
+                    "boolean" => PDO::PARAM_BOOL,
+                    "integer" => PDO::PARAM_INT,
+                    "NULL" => PDO::PARAM_NULL,
+                    default => PDO::PARAM_STR
+                };
+
+                $stmt->bindValue($i++, $datum, $type);
+
+            }
+            $stmt->bindValue($i,$id, PDO::PARAM_INT);
+
+            return $stmt->execute();
+
+        } catch (\PDOException $e) {
+                throw $e;
+        }
+
+        return false;
     }
+    public function delete(string $id): bool
+    {
+        $sql = "DELETE FROM {$this->getTable()} WHERE id = :id";
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        return  $stmt->execute();
+    }
+
+
 
  }

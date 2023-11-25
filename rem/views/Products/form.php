@@ -1,5 +1,5 @@
 <label for="product_id">Product ID</label>
-<input type="number" id="product_id" name="product_id" <?= $product["product_id"] ? "disabled" : "" ; ?> value="<?= $product["product_id"] ?? null; ?>">
+<input type="number" id="product_id" name="product_id" <?= ( $action === "edit" || $action === "update" ) ? "disabled" : "" ?> value="<?= $product["product_id"] ?? null; ?>">
 <?php  if (isset($errors["product_id"])): ?>
     <div class="error" style="color: orangered"><?= $errors["product_id"] ?></div>
 <?php  endif ?>
@@ -11,8 +11,6 @@
 <?php  endif ?>
 
 <label for="description">Description</label>
-<textarea id="description" name="description">
-    <?= $product["description"] ?? '' ?>
-</textarea>
+<textarea id="description" name="description"><?= $product["description"] ?? '' ?></textarea>
 
 <button>Save</button>

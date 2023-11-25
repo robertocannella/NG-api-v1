@@ -18,7 +18,7 @@ class Router {
             "params" => $params
         ];
     }
-    public function match(string $path): bool|array
+    public function match(string $path, string $method): bool|array
     {
         $path = trim($path, "/");
 
@@ -33,8 +33,19 @@ class Router {
 
                 $matches = array_filter($matches, 'is_string', ARRAY_FILTER_USE_KEY);
 
-                return array_merge($matches,$route["params"]);
+                $params  = array_merge($matches,$route["params"]);
 
+                if (array_key_exists("method", $params)){
+
+                    if (strtolower($method) !== strtolower($params["method"])){
+
+                        continue;
+
+                    }
+
+                }
+
+                return $params;
             }
         }
 

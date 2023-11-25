@@ -3,7 +3,7 @@
 
 <a href="/rem/products/new">New Product</a>
 
-
+<p>Total Products: <?= $total ?></p>
 <?php foreach ($products as $product): ?>
     <h2>
         <a href="/rem/products/<?= $product["id"] ?>/show">

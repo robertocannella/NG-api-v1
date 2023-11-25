@@ -24,14 +24,13 @@ if ($path === false){
 
 $path = str_replace($home_dir,"", $path);
 
-
 $router = require dirname(__DIR__) .  "/config/routes.php";
 
 $container = require dirname(__DIR__) . "/config/services.php";
 
 $dispatch = new Dispatcher($router, $container);
 
-$dispatch->handle($path);
+$dispatch->handle($path, $_SERVER["REQUEST_METHOD"]);
 
 
 

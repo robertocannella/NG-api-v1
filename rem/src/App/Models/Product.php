@@ -49,5 +49,16 @@ class Product extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
 
     }
+    public function getTotalProducts():int
+    {
+        $sql = "SELECT COUNT(*) AS total FROM {$this->getTable()}";
+
+        $stmt = $this->conn->query($sql);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return (int) $row['total'];
+
+    }
 
  }

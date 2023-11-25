@@ -2,13 +2,15 @@
 
 <table>
     <thead>
-    <tr><td>Product Id</td><td>Description</td><td>Edit</td></tr>
+    <tr><td>Product Id</td><td>Description</td><td>Edit</td><td>Delete</td></tr>
     </thead>
     <tbody>
     <tr>
         <td><?= $product["product_id"] ?></td>
         <td><?= $product["description"] ?></td>
-        <td><p><a href="/rem/products/<?= $product["id"] ?>/edit">Edit</a></p></td></tr>
+        <td><p><a href="/rem/products/<?= $product["id"] ?>/edit">Edit</a></p></td>
+        <td><p><a href="/rem/products/<?= $product["id"] ?>/delete">X</a></p></td>
+    </tr>
     </tbody>
 </table>
 
