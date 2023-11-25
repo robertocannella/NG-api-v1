@@ -6,6 +6,7 @@ namespace App\Controllers;
 
 use Framework\Controller;
 
+
 class Home extends Controller {
 
     public function __construct()

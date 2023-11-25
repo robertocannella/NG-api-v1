@@ -7,7 +7,6 @@ namespace App\Controllers;
 use App\Models\Product;
 use Framework\Controller;
 use Framework\Exceptions\PageNotFoundException;
-use Framework\Viewer;
 use JetBrains\PhpStorm\NoReturn;
 
 
@@ -24,10 +23,8 @@ class Products extends Controller
         $products = $this->product_model->findAll();
 
 
-        $this->viewer->render('Shared/header.php', ["title" => "All Products"]);
-
         // pass data as an associative array
-        $this->viewer->render('Products/index.php', [
+        $this->viewer->render('Products/index.mvc.php', [
             "products" => $products,
             "total" => $this->product_model->getTotalProducts()
         ]);
@@ -49,10 +46,10 @@ class Products extends Controller
 
         $product = $this->getProductById($id);
 
-        $this->viewer->render('Shared/header.php', ["title" => "Product Page"]);
-
         // pass data as an associative array
-        $this->viewer->render("Products/show.php", ["id" => $id, "product" => $product]);
+        $this->viewer->render("Products/show.mvc.php", [
+            "id" => $id, "product" => $product
+        ]);
 
     }
     public function edit(string $id):void
@@ -60,23 +57,19 @@ class Products extends Controller
 
         $product = $this->getProductById($id);
 
-        $this->viewer->render('Shared/header.php', ["title" => "Edit Product"]);
 
         // pass data as an associative array
-        $this->viewer->render("Products/edit.php",
+        $this->viewer->render("Products/edit.mvc.php",
             ["id" => $id, "product" => $product, "action" => "edit"]);
 
     }
     public function new(): void
     {
 
-        $this->viewer->render('Shared/header.php', ["title" => "New Product"]);
-
-        $this->viewer->render("Products/new.php",["action" => "new"]);
+        $this->viewer->render("Products/new.mvc.php",["action" => "new"]);
     }
     public function create(): void
     {
-
 
         $data = [
             "product_id" => (int) $this->request->post["product_id"],
@@ -92,9 +85,7 @@ class Products extends Controller
 
         } else {
 
-            $this->viewer->render('Shared/header.php', ["title" => "New Product"]);
-
-            $this->viewer->render("Products/new.php", [
+            $this->viewer->render("Products/new.mvc.php", [
                 "errors" => $this->product_model->getErrors(),
                 "product" => $data,
                 "action" => "create"
@@ -117,9 +108,7 @@ class Products extends Controller
 
         } else {
 
-            $this->viewer->render('Shared/header.php', ["title" => "Edit Product"]);
-
-            $this->viewer->render("Products/edit.php", [
+            $this->viewer->render("Products/edit.mvc.php", [
                 "errors" => $this->product_model->getErrors(),
                 "product" => $product,
                 "action" => "update"
@@ -133,7 +122,7 @@ class Products extends Controller
 
         $this->viewer->render('Shared/header.php', ["title" => "Delete Product"]);
 
-        $this->viewer->render("Products/delete.php", [
+        $this->viewer->render("Products/delete.mvc.php", [
             "product" => $product,
             "action" => "delete"
         ]);
