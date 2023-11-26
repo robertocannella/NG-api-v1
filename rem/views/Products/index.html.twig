@@ -1,4 +1,4 @@
-{% extends "base.twig.html" %}
+{% extends "base.html.twig" %}
 
 {% block title %}Product{% endblock %}
 
@@ -10,7 +10,7 @@
 <p>Total Products: {{ total }} </p>
 {% for product in products  %}
     <h2>
-        <a href="/rem/products/{{ product["id"] }}/show">
+        <a href="/rem/products/{{ product.id }}/show">
         {{ product["name"] }}
         </a>
 

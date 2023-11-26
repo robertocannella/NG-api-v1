@@ -7,7 +7,7 @@ namespace App\Controllers;
 use Framework\Controller;
 use Framework\Response;
 use App\Models\User;
-use GuzzleHttp\Promise\RejectedPromise;
+
 
 
 class Signup extends Controller
@@ -19,7 +19,7 @@ class Signup extends Controller
 
     public function new(): Response
     {
-        return $this->view('Signup/new.twig.html');
+        return $this->view('Signup/new.html.twig');
     }
     /**
      * Sign up a new user
@@ -45,9 +45,9 @@ class Signup extends Controller
 
         }else{
 
-            return $this->view("Signup/new.twig.html", [ "user" => $data, "errors" => $this->user->getErrors()]);
+            return $this->view("Signup/new.html.twig", [ "user" => $data, "errors" => $this->user->getErrors()]);
         }
-        return $this->view("Signup/success.twig.html");
+        return $this->view("Signup/success.html.twig");
 
 
     }

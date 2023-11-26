@@ -1,21 +1,27 @@
-{% extends 'base.twig.html' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Home{% endblock %}
 
 {% block body %}
 
-{{ dump(errors) }}
+
 <h1>Sign up</h1>
 
 <form method="post" action="/rem/signup/create">
 
     <div>
         <label for="inputName">Name</label>
-        <input id="inputName" name="name" placeholder="Name" autofocus />
+        <input id="inputName" name="name" placeholder="Name" autofocus value="{{ user.name }}" />
+        {%  if  errors.name %}
+        <div class="error" style="color: orangered">{{ errors.name }}</div>
+        {%  endif %}
     </div>
     <div>
         <label for="inputEmail">Email address</label>
-        <input id="inputEmail" name="email" placeholder="email address" />
+        <input id="inputEmail" name="email" placeholder="email address" value="{{ user.email }}" />
+        {%  if  errors.email %}
+            <div class="error" style="color: orangered">{{ errors.email }}</div>
+        {%  endif %}
     </div>
     <div>
         <label for="inputPassword">Password</label>
@@ -25,6 +31,9 @@
         <label for="inputPasswordConfirmation">Repeat password</label>
         <input type="password" id="inputPasswordConfirmation" name="password_confirmation"
                placeholder="Repeat password" />
+        {%  if  errors["password"] %}
+            <div class="error" style="color: orangered">{{ errors["password"] }}</div>
+        {%  endif %}
     </div>
 
     <button type="submit">Sign up</button>

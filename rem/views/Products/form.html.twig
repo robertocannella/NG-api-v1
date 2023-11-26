@@ -4,20 +4,13 @@
         type="number"
         id="product_id"
         name="product_id"
-        {% if action == "edit" %}
+        {% if action == "edit" or action == "update" %}
         disabled
         {% endif %}
-        {% if action == "update" %}
-        disabled
-        {% endif %}
-        {% if product %}
-            value="{{  product["product_id"] }}"
-        {% endif %}
->
+        value="{{  product["product_id"] }}">
 
-
-{%  if errors["product_id"] %}
-    <div class="error" style="color: orangered">{{ errors["product_id"] }}</div>
+{%  if errors.product_id %}
+    <div class="error" style="color: orangered">{{ errors.product_id}}</div>
 {% endif %}
 
 <label for="name">Name</label>
@@ -25,16 +18,15 @@
         type="text"
         id="name"
         name="name"
-        {%  if product %}
-            value="{{ product["name"] }}">
-        {% endif %}
-{%  if  errors["name"] %}
-    <div class="error" style="color: orangered">{{ errors["name"] }}</div>
+        value="{{ product.name }}">
+
+{%  if  errors.name %}
+    <div class="error" style="color: orangered">{{ errors.name}}</div>
 {%  endif %}
 
 <label for="description">Description</label>
 <textarea
         id="description"
-        name="description">{{ product["description"] }}</textarea>
+        name="description">{{ product.description }}</textarea>
 
 <button>Save</button>
