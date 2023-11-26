@@ -3,6 +3,7 @@
 declare(strict_types=1);
 namespace Framework;
 use \Twig\Loader\FilesystemLoader;
+use \Twig\Extension\DebugExtension;
 use \Twig\Environment;
 
 abstract class Controller{
@@ -30,8 +31,10 @@ abstract class Controller{
 
         $loader = new FilesystemLoader('../views/');
         $twig = new Environment($loader, [
+            'debug' => true,
              //'cache' => '/path/to/compilation_cache',
         ]);
+        $twig->addExtension(new DebugExtension());
         $this->viewer = $twig;
 
     }

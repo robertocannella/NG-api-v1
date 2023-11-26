@@ -103,6 +103,7 @@ class Dispatcher {
         }
 
         return str_replace($home_dir,"", $path);
+
     }
     private function getMiddleware(array $params) : array
     {
