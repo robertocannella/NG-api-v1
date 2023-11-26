@@ -1,0 +1,7 @@
+CREATE  TABLE IF NOT EXISTS product_users (
+    id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(50) ,
+    email VARCHAR(255) UNIQUE NOT NULL ,
+    password_hash VARCHAR(255)
+)
+

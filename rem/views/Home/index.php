@@ -1,3 +1,5 @@
+{{ name }}
+
 This is the home index page
 
 </body>

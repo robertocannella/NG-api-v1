@@ -39,6 +39,7 @@ class Dispatcher {
 
         $controller_object = $this->container->get($controller);
 
+        // Changed To Twig
         $controller_object->setViewer($this->container->get(TemplateViewerInterface::class));
 
         $controller_object->setResponse($this->container->get(Response::class));

@@ -1,4 +1,4 @@
-
+w
 CREATE DATABASE api_db;
 
 CREATE USER 'api_db_user'@'localhost' IDENTIFIED BY 'password';

@@ -38,9 +38,17 @@ try {
     exit();
 }
 
+
+$loader = new \Twig\Loader\FilesystemLoader('../views/');
+$twig = new \Twig\Environment($loader, [
+    // 'cache' => '/path/to/compilation_cache',
+]);
+
 $conn        = $db->getConnection();
 $handler     = new PersistentSessionHandler($conn);
 $autologin   = new Autologin($conn,'9','/rem', 'nuvolagraph.com');
 session_set_save_handler($handler);
 session_start();
 $_SESSION['active'] = time();
+
+return $twig;

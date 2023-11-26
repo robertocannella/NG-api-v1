@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 require dirname(__DIR__) . "/bootstrap.php";
+
+
 //
 $dotenv = new \Framework\Dotenv();
 use Framework\Dispatcher;

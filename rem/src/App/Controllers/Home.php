@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\Controller;
+use Framework\Response;
+
 
 
 class Home extends Controller {
@@ -13,9 +15,9 @@ class Home extends Controller {
     {
     }
 
-    public function index(): void
+    public function index(): Response
     {
-        $this->viewer->render("Shared/header.php",["title" => "Home"]);
-        $this->viewer->render('Home/index.php');
+       return $this->view('Home/index.twig.html', ["name" => "Roberto"]);
+
     }
 }
