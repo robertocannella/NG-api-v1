@@ -24,7 +24,7 @@ class Products extends Controller
         $products = $this->product_model->findAll();
 
         // pass data as an associative array
-        return $this->view('Products/index.mvc.php', [
+        return $this->view('Products/index.html.twig', [
             "products" => $products,
             "total" => $this->product_model->getTotalProducts()
         ]);
@@ -46,7 +46,7 @@ class Products extends Controller
         $product = $this->getProductById($id);
 
         // pass data as an associative array
-        return $this->view("Products/show.mvc.php", [
+        return $this->view("Products/show.html.twig", [
             "id" => $id,
             "product" => $product
         ]);
@@ -57,7 +57,7 @@ class Products extends Controller
         $product = $this->getProductById($id);
 
         // pass data as an associative array
-        return $this->view("Products/edit.mvc.php", [
+        return $this->view("Products/edit.html.twig", [
             "id" => $id,
             "product" => $product,
             "action" => "edit"
@@ -67,7 +67,7 @@ class Products extends Controller
     public function new(): Response
     {
 
-        return $this->view("Products/new.mvc.php",["action" => "new"]);
+        return $this->view("Products/new.html.twig",["action" => "new"]);
     }
     public function create(): Response
     {
@@ -84,7 +84,7 @@ class Products extends Controller
 
         } else {
 
-           return $this->view("Products/new.mvc.php", [
+           return $this->view("Products/new.html.twig", [
                 "errors" => $this->product_model->getErrors(),
                 "product" => $data,
                 "action" => "create"
@@ -107,7 +107,7 @@ class Products extends Controller
 
         } else {
 
-            return $this->view("Products/edit.mvc.php", [
+            return $this->view("Products/edit.html.twig", [
                 "errors" => $this->product_model->getErrors(),
                 "product" => $product,
                 "action" => "update"
@@ -120,7 +120,7 @@ class Products extends Controller
 
         $product = $this->getProductById($id);
 
-        return $this->view("Products/delete.mvc.php", [
+        return $this->view("Products/delete.html.twig", [
             "product" => $product,
             "action" => "delete"
         ]);

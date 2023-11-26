@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Product{% endblock %}
+
+{% block body %}
+<h1>New Product</h1>
+
+
+{% if errors["duplicate"] %}
+<div class="error" style="color: orangered">{{ errors["duplicate"] }} </div>
+{% endif %}
+
+
+<form method="post" action="/rem/products/create">
+
+{% include "Products/form.html.twig" %}
+
+</form>
+{% endblock %}

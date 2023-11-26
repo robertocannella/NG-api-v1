@@ -17,7 +17,7 @@ class Home extends Controller {
 
     public function index(): Response
     {
-       return $this->view('Home/index.twig.html', ["name" => "Roberto"]);
+       return $this->view('Home/index.html.twig', ["name" => "Roberto"]);
 
     }
 }

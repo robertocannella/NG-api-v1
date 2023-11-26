@@ -1,0 +1,21 @@
+{% extends "base.twig.html" %}
+
+{% block title %}Product{% endblock %}
+
+{% block body %}
+<h1>Products</h1>
+
+<a href="/rem/products/new">New Product</a>
+
+<p>Total Products: {{ total }} </p>
+{% for product in products  %}
+    <h2>
+        <a href="/rem/products/{{ product["id"] }}/show">
+        {{ product["name"] }}
+        </a>
+
+    </h2>
+
+{% endfor %}
+
+{% endblock %}
